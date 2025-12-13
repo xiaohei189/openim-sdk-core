@@ -5,7 +5,6 @@
 use crate::im::advanced_msg_listener::{AdvancedMsgListener, EmptyAdvancedMsgListener};
 use crate::im::conversation::{
     ConversationListener, ConversationSyncer, ConversationSyncerConfig, EmptyConversationListener,
-    LocalConversation,
 };
 use crate::im::friend::{FriendListener, FriendSyncer, FriendSyncerConfig, LocalFriend};
 use crate::im::message_store::MessageStore;
@@ -14,12 +13,14 @@ use crate::im::msg::{
     QuoteElem, SoundElem, VideoElem,
 };
 use crate::im::serialization::{compress_gzip, decompress_gzip, generate_msg_id};
-use crate::im::types::{msg_type, OpenIMResp, ServerResponse};
-use anyhow::Result;
+use crate::im::types::LocalConversation;
+use crate::im::types::{msg_type, ApiResponse, OpenIMResp, WebSocketConnectResp};
+use anyhow::{Context, Result};
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
 use openim_protocol::constant;
 use openim_protocol::Message as ProtobufMessage;
+use sea_orm::{ConnectOptions, Database, DatabaseConnection};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
@@ -102,6 +103,8 @@ pub struct OpenIMClient {
     advanced_msg_listener: Arc<dyn AdvancedMsgListener>,
     // 消息存储（本地 SQLite，sqlx 驱动）
     pub(crate) message_store: Option<Arc<MessageStore>>,
+    // 共享数据库连接（用于会话和好友同步器）
+    db: Option<Arc<DatabaseConnection>>,
 }
 
 impl OpenIMClient {
@@ -120,14 +123,27 @@ impl OpenIMClient {
                 };
                 let listener = listener.clone();
                 let syncer_slot = &mut self.conversation_syncer;
+                let db = self.db.clone();
                 handle.block_on(async {
-                    if let Ok(syncer) =
-                        ConversationSyncer::with_listener(cfg, listener.clone()).await
-                    {
-                        *syncer_slot = Some(Arc::new(syncer));
+                    if let Some(db_conn) = db {
+                        if let Ok(syncer) =
+                            ConversationSyncer::with_listener_and_db(cfg, listener.clone(), db_conn)
+                                .await
+                        {
+                            *syncer_slot = Some(Arc::new(syncer));
+                        } else {
+                            // 保持原同步器，出现错误仅记录日志
+                            tracing::error!("[Client] 重建会话同步器失败，保持原同步器");
+                        }
                     } else {
-                        // 保持原同步器，出现错误仅记录日志
-                        tracing::error!("[Client/Conv] 重建会话同步器失败，保持原同步器");
+                        // 如果没有共享数据库连接，使用旧方法
+                        if let Ok(syncer) =
+                            ConversationSyncer::with_listener(cfg, listener.clone()).await
+                        {
+                            *syncer_slot = Some(Arc::new(syncer));
+                        } else {
+                            tracing::error!("[Client] 重建会话同步器失败，保持原同步器");
+                        }
                     }
                 });
             }
@@ -149,11 +165,24 @@ impl OpenIMClient {
                 };
                 let listener = listener.clone();
                 let syncer_slot = &mut self.friend_syncer;
+                let db = self.db.clone();
                 handle.block_on(async {
-                    if let Ok(syncer) = FriendSyncer::with_listener(cfg, listener.clone()).await {
-                        *syncer_slot = Some(Arc::new(syncer));
+                    if let Some(db_conn) = db {
+                        if let Ok(syncer) =
+                            FriendSyncer::with_listener_and_db(cfg, listener.clone(), db_conn).await
+                        {
+                            *syncer_slot = Some(Arc::new(syncer));
+                        } else {
+                            tracing::error!("[Client] 重建好友同步器失败，保持原同步器");
+                        }
                     } else {
-                        tracing::error!("[Client/Friend] 重建好友同步器失败，保持原同步器");
+                        // 如果没有共享数据库连接，使用旧方法
+                        if let Ok(syncer) = FriendSyncer::with_listener(cfg, listener.clone()).await
+                        {
+                            *syncer_slot = Some(Arc::new(syncer));
+                        } else {
+                            tracing::error!("[Client] 重建好友同步器失败，保持原同步器");
+                        }
                     }
                 });
             }
@@ -178,6 +207,7 @@ impl OpenIMClient {
             friend_listener: Arc::new(crate::im::friend::EmptyFriendListener),
             advanced_msg_listener: Arc::new(EmptyAdvancedMsgListener),
             message_store: None,
+            db: None,
         }
     }
     /// 构建 WebSocket 连接 URL
@@ -208,13 +238,13 @@ impl OpenIMClient {
         let url = self.build_url(&operation_id);
 
         info!(
-            "[Client/WS] 🔗 连接到 OpenIM Server (user={}, platform={})",
+            "[Client] 🔗 连接到 OpenIM Server (user={}, platform={})",
             self.config.user_id, self.config.platform_id
         );
 
         let (ws_stream, response) = connect_async(&url).await?;
         info!(
-            "[Client/WS] ✅ WebSocket 连接成功, 状态: {}",
+            "[Client] ✅ WebSocket 连接成功, 状态: {}",
             response.status()
         );
 
@@ -224,23 +254,71 @@ impl OpenIMClient {
 
         // 等待连接成功响应
         if let Some(Ok(WsMessage::Text(text))) = read.next().await {
-            if let Ok(resp) = serde_json::from_str::<ServerResponse>(&text) {
-                if resp.err_code == 0 {
-                    info!("[Client/WS] ✅ 服务器连接鉴权成功");
-                    let listener = self.advanced_msg_listener.clone();
-                    tokio::spawn(async move {
-                        listener
-                            .on_connection_status_changed(true, "连接成功".to_string())
-                            .await;
-                    });
-                } else {
-                    return Err(anyhow::anyhow!("服务器错误: {}", resp.err_msg));
+            debug!("[Client] 📥 WebSocket 连接响应: {}", text);
+            match serde_json::from_str::<WebSocketConnectResp>(&text) {
+                Ok(resp) => {
+                    if resp.err_code == 0 {
+                        info!("[Client] ✅ 服务器连接鉴权成功");
+                        let listener = self.advanced_msg_listener.clone();
+                        tokio::spawn(async move {
+                            listener
+                                .on_connection_status_changed(true, "连接成功".to_string())
+                                .await;
+                        });
+                    } else {
+                        let error_msg = if !resp.err_dlt.is_empty() {
+                            format!("{} (详情: {})", resp.err_msg, resp.err_dlt)
+                        } else {
+                            resp.err_msg.clone()
+                        };
+                        error!(
+                            "[Client] ❌ WebSocket 连接失败，错误码: {}, 错误信息: {}",
+                            resp.err_code, error_msg
+                        );
+                        return Err(anyhow::anyhow!(
+                            "WebSocket 连接失败，错误码: {}, 错误信息: {}",
+                            resp.err_code,
+                            error_msg
+                        ));
+                    }
+                }
+                Err(e) => {
+                    error!(
+                        "[Client] ❌ WebSocket 响应解析失败: {}, 原始响应: {}",
+                        e, text
+                    );
+                    return Err(anyhow::anyhow!(
+                        "WebSocket 响应解析失败: {}, 原始响应: {}",
+                        e,
+                        text
+                    ));
                 }
             }
+        } else {
+            error!("[Client] ❌ 未收到 WebSocket 连接响应");
+            return Err(anyhow::anyhow!("未收到 WebSocket 连接响应"));
         }
 
-        info!("[Client/WS] 💓 启动心跳");
-        info!("[Client/WS] 📥 开始监听服务器消息");
+        info!("[Client] 💓 启动心跳");
+        info!("[Client] 📥 开始监听服务器消息");
+
+        // 创建共享数据库连接
+        info!(
+            "[Client] 🔗 创建共享数据库连接: {}",
+            self.config.conversation_db_url
+        );
+        let mut opt = ConnectOptions::new(self.config.conversation_db_url.clone());
+        opt.sqlx_logging(false);
+        let db = Arc::new(Database::connect(opt).await.context(format!(
+            "连接SQLite数据库失败: {}",
+            self.config.conversation_db_url
+        ))?);
+        self.db = Some(db.clone());
+
+        // 初始化数据库表结构（会话表和好友表）
+        info!("[Client] 📋 初始化数据库表结构");
+        ConversationSyncer::init_db_with_connection(&db).await?;
+        crate::im::friend::FriendSyncer::init_db_with_connection(&db).await?;
 
         // 启动会话同步（HTTP + 本地 SQLite），并保存同步器用于后续基于消息通知的实时更新
         let cfg = ConversationSyncerConfig {
@@ -250,16 +328,21 @@ impl OpenIMClient {
             db_path: self.config.conversation_db_url.clone(),
         };
         let syncer = Arc::new(
-            ConversationSyncer::with_listener(cfg, self.conversation_listener.clone()).await?,
+            ConversationSyncer::with_listener_and_db(
+                cfg,
+                self.conversation_listener.clone(),
+                db.clone(),
+            )
+            .await?,
         );
         self.conversation_syncer = Some(syncer.clone());
 
         tokio::spawn(async move {
-            info!("[Client/Conv] 🔄 启动会话增量同步任务");
+            info!("[Client] 🔄 启动会话增量同步任务");
             let result = syncer.incr_sync_conversations().await;
             match result {
-                Ok(_) => info!("[Client/Conv] ✅ 会话同步完成"),
-                Err(e) => error!("[Client/Conv] ❌ 会话同步失败: {e}"),
+                Ok(_) => info!("[Client] ✅ 会话同步完成"),
+                Err(e) => error!("[Client] ❌ 会话同步失败: {e}"),
             }
         });
 
@@ -270,16 +353,22 @@ impl OpenIMClient {
             token: self.config.token.clone(),
             db_path: self.config.conversation_db_url.clone(),
         };
-        let friend_syncer =
-            Arc::new(FriendSyncer::with_listener(friend_cfg, self.friend_listener.clone()).await?);
+        let friend_syncer = Arc::new(
+            FriendSyncer::with_listener_and_db(
+                friend_cfg,
+                self.friend_listener.clone(),
+                db.clone(),
+            )
+            .await?,
+        );
         self.friend_syncer = Some(friend_syncer.clone());
 
         tokio::spawn(async move {
-            info!("[Client/Friend] 🔄 启动好友增量同步任务");
+            info!("[Client] 🔄 启动好友增量同步任务");
             let result = friend_syncer.incr_sync_friends().await;
             match result {
-                Ok(_) => info!("[Client/Friend] ✅ 好友同步完成"),
-                Err(e) => error!("[Client/Friend] ❌ 好友同步失败: {e}"),
+                Ok(_) => info!("[Client] ✅ 好友同步完成"),
+                Err(e) => error!("[Client] ❌ 好友同步失败: {e}"),
             }
         });
 
@@ -324,7 +413,7 @@ impl OpenIMClient {
         text: String,
         session_type: i32, // 1=单聊, 2=群聊
     ) -> Result<()> {
-        debug!("[Client/Msg] 🔧 构造文本消息");
+        debug!("[Client] 🔧 构造文本消息");
 
         let content_json = serde_json::json!({ "content": text });
         let content_str = serde_json::to_string(&content_json)?;
@@ -348,7 +437,7 @@ impl OpenIMClient {
         picture: PictureElem,
         session_type: i32,
     ) -> Result<()> {
-        debug!("[Client/Msg] 🔧 构造图片消息");
+        debug!("[Client] 🔧 构造图片消息");
         let content_str = serde_json::to_string(&picture)?;
         self.send_rich_message(
             recv_id,
@@ -369,7 +458,7 @@ impl OpenIMClient {
         sound: SoundElem,
         session_type: i32,
     ) -> Result<()> {
-        debug!("[Client/Msg] 🔧 构造语音消息");
+        debug!("[Client] 🔧 构造语音消息");
         let content_str = serde_json::to_string(&sound)?;
         self.send_rich_message(
             recv_id,
@@ -390,7 +479,7 @@ impl OpenIMClient {
         video: VideoElem,
         session_type: i32,
     ) -> Result<()> {
-        debug!("[Client/Msg] 🔧 构造视频消息");
+        debug!("[Client] 🔧 构造视频消息");
         let content_str = serde_json::to_string(&video)?;
         self.send_rich_message(
             recv_id,
@@ -411,7 +500,7 @@ impl OpenIMClient {
         file: FileElem,
         session_type: i32,
     ) -> Result<()> {
-        debug!("[Client/Msg] 🔧 构造文件消息");
+        debug!("[Client] 🔧 构造文件消息");
         let content_str = serde_json::to_string(&file)?;
         self.send_rich_message(
             recv_id,
@@ -689,7 +778,7 @@ impl OpenIMClient {
                 Ok(WsMessage::Text(text)) => {
                     if let Ok(json) = serde_json::from_str::<serde_json::Value>(&text) {
                         if let Some(req_id) = json.get("reqIdentifier") {
-                            debug!("[Client/WS] 文本响应: reqId={}", req_id);
+                            debug!("[Client] 文本响应: reqId={}", req_id);
                         }
                     }
                 }
@@ -698,11 +787,11 @@ impl OpenIMClient {
                 }
                 Ok(WsMessage::Ping(_)) | Ok(WsMessage::Pong(_)) => {}
                 Ok(WsMessage::Close(frame)) => {
-                    warn!("[Client/WS] 👋 连接关闭: {:?}", frame);
+                    warn!("[Client] 👋 连接关闭: {:?}", frame);
                     break;
                 }
                 Err(e) => {
-                    error!("[Client/WS] WebSocket 错误: {}", e);
+                    error!("[Client] WebSocket 错误: {}", e);
                     break;
                 }
                 _ => {}
@@ -717,7 +806,7 @@ impl OpenIMClient {
             match decompress_gzip(&data) {
                 Ok(d) => d,
                 Err(e) => {
-                    error!("[Client/WS] 解压失败: {}", e);
+                    error!("[Client] 解压失败: {}", e);
                     return;
                 }
             }
@@ -730,7 +819,7 @@ impl OpenIMClient {
             Ok(r) => r,
             Err(e) => {
                 error!(
-                    "[Client/WS] JSON 解析失败: {}, 原始数据: {:?}",
+                    "[Client] JSON 解析失败: {}, 原始数据: {:?}",
                     e,
                     String::from_utf8_lossy(&decompressed)
                 );
@@ -749,25 +838,25 @@ impl OpenIMClient {
                     if let Ok(send_resp) = openim_protocol::msg::SendMsgResp::decode(&resp.data[..])
                     {
                         debug!(
-                            "[Client/Msg] 消息发送成功: serverMsgID={}, clientMsgID={}",
+                            "[Client] 消息发送成功: serverMsgID={}, clientMsgID={}",
                             send_resp.server_msg_id, send_resp.client_msg_id
                         );
                     } else {
-                        debug!("[Client/Msg] 消息发送成功（解析响应失败）");
+                        debug!("[Client] 消息发送成功（解析响应失败）");
                     }
                 } else {
-                    error!("[Client/Msg] 消息发送失败: {:?}", resp);
+                    error!("[Client] 消息发送失败: {:?}", resp);
                 }
             }
             msg_type::WS_KICK_ONLINE_MSG => {
-                warn!("[Client/WS] ⚠️ 被踢下线");
+                warn!("[Client] ⚠️ 被踢下线");
                 let listener = self.advanced_msg_listener.clone();
                 tokio::spawn(async move {
                     listener.on_kicked_offline().await;
                 });
             }
             _ => {
-                debug!("[Client/WS] 未知消息类型: {}", resp.req_identifier);
+                debug!("[Client] 未知消息类型: {}", resp.req_identifier);
             }
         }
     }
@@ -782,7 +871,7 @@ impl OpenIMClient {
         let push_msg = match sdkws::PushMessages::decode(data) {
             Ok(pm) => pm,
             Err(e) => {
-                error!("[Client/WS] Protobuf 解析失败: {}", e);
+                error!("[Client] Protobuf 解析失败: {}", e);
                 return;
             }
         };
@@ -797,7 +886,7 @@ impl OpenIMClient {
                 let handled = self.handle_single_message(conv_id, msg, false).await;
                 if !handled {
                     warn!(
-                        "[Client/Msg] ⚠️ 未处理的消息类型: contentType={} ({}) conversationID={} clientMsgID={}",
+                        "[Client] ⚠️ 未处理的消息类型: contentType={} ({}) conversationID={} clientMsgID={}",
                         msg.content_type,
                         Self::get_content_type_name(msg.content_type),
                         conv_id,
@@ -810,7 +899,7 @@ impl OpenIMClient {
                 if msg.content_type != constant::TYPING {
                     if let Some(syncer) = &self.conversation_syncer {
                         if let Err(e) = syncer.on_new_message(conv_id, msg, false).await {
-                            error!("[Client/Conv] on_new_message 更新会话失败: {}", e);
+                            error!("[Client] on_new_message 更新会话失败: {}", e);
                         }
                     }
                 }
@@ -827,7 +916,7 @@ impl OpenIMClient {
                 let handled = self.handle_single_message(conv_id, msg, true).await;
                 if !handled {
                     warn!(
-                        "[Client/Msg] ⚠️ 未处理的通知消息类型: contentType={} ({}) conversationID={} clientMsgID={}",
+                        "[Client] ⚠️ 未处理的通知消息类型: contentType={} ({}) conversationID={} clientMsgID={}",
                         msg.content_type,
                         Self::get_content_type_name(msg.content_type),
                         conv_id,
@@ -842,13 +931,13 @@ impl OpenIMClient {
                         && msg.content_type <= constant::FRIENDS_INFO_UPDATE_NOTIFICATION
                     {
                         info!(
-                            "[Client/Friend] 收到好友相关通知 contentType={}，触发好友增量同步",
+                            "[Client] 收到好友相关通知 contentType={}，触发好友增量同步",
                             msg.content_type
                         );
                         let syncer = friend_syncer.clone();
                         tokio::spawn(async move {
                             if let Err(e) = syncer.incr_sync_friends().await {
-                                error!("[Client/Friend] 好友通知触发同步失败: {}", e);
+                                error!("[Client] 好友通知触发同步失败: {}", e);
                             }
                         });
                     }
@@ -859,7 +948,7 @@ impl OpenIMClient {
                 if msg.content_type != constant::TYPING {
                     if let Some(syncer) = &self.conversation_syncer {
                         if let Err(e) = syncer.on_new_message(conv_id, msg, true).await {
-                            error!("[Client/Conv] on_new_message 更新通知会话失败: {}", e);
+                            error!("[Client] on_new_message 更新通知会话失败: {}", e);
                         }
                     }
                 }
@@ -1061,7 +1150,7 @@ impl OpenIMClient {
         );
         let operation_id = format!("{}", chrono::Utc::now().timestamp_millis());
 
-        info!("[Client/Msg] 📡 标记所有会话已读");
+        info!("[Client] 📡 标记所有会话已读");
 
         let resp = reqwest::Client::new()
             .post(&url)
@@ -1078,7 +1167,7 @@ impl OpenIMClient {
         let text = resp.text().await?;
         if !status.is_success() {
             error!(
-                "[Client/Msg] 标记所有会话已读请求失败，HTTP状态: {}, 响应: {}",
+                "[Client] 标记所有会话已读请求失败，HTTP状态: {}, 响应: {}",
                 status, text
             );
             return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
@@ -1092,14 +1181,14 @@ impl OpenIMClient {
                     .and_then(|v| v.as_str())
                     .unwrap_or("未知错误");
                 error!(
-                    "[Client/Msg] 标记所有会话已读服务器错误，错误码: {}, 错误信息: {}",
+                    "[Client] 标记所有会话已读服务器错误，错误码: {}, 错误信息: {}",
                     err_code, err_msg
                 );
                 return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
             }
         }
 
-        info!("[Client/Msg] ✅ 标记所有会话已读成功");
+        info!("[Client] ✅ 标记所有会话已读成功");
         Ok(())
     }
 
@@ -1148,7 +1237,7 @@ impl OpenIMClient {
         });
 
         info!(
-            "[Client/Msg] 📡 撤回消息: conversationID={}, clientMsgID={}, seq={}",
+            "[Client] 📡 撤回消息: conversationID={}, clientMsgID={}, seq={}",
             conversation_id, client_msg_id, msg.seq
         );
 
@@ -1165,7 +1254,7 @@ impl OpenIMClient {
         let text = resp.text().await?;
         if !status.is_success() {
             error!(
-                "[Client/Msg] 撤回消息请求失败，HTTP状态: {}, 响应: {}",
+                "[Client] 撤回消息请求失败，HTTP状态: {}, 响应: {}",
                 status, text
             );
             return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
@@ -1179,14 +1268,14 @@ impl OpenIMClient {
                     .and_then(|v| v.as_str())
                     .unwrap_or("未知错误");
                 error!(
-                    "[Client/Msg] 撤回消息服务器错误，错误码: {}, 错误信息: {}",
+                    "[Client] 撤回消息服务器错误，错误码: {}, 错误信息: {}",
                     err_code, err_msg
                 );
                 return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
             }
         }
 
-        info!("[Client/Msg] ✅ 撤回消息成功");
+        info!("[Client] ✅ 撤回消息成功");
         Ok(())
     }
 
@@ -1201,10 +1290,7 @@ impl OpenIMClient {
             "userID": self.config.user_id,
         });
 
-        info!(
-            "[Client/Msg] 📡 删除消息: conversationID={}",
-            conversation_id
-        );
+        info!("[Client] 📡 删除消息: conversationID={}", conversation_id);
 
         let resp = reqwest::Client::new()
             .post(&url)
@@ -1219,7 +1305,7 @@ impl OpenIMClient {
         let text = resp.text().await?;
         if !status.is_success() {
             error!(
-                "[Client/Msg] 删除消息请求失败，HTTP状态: {}, 响应: {}",
+                "[Client] 删除消息请求失败，HTTP状态: {}, 响应: {}",
                 status, text
             );
             return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
@@ -1233,14 +1319,14 @@ impl OpenIMClient {
                     .and_then(|v| v.as_str())
                     .unwrap_or("未知错误");
                 error!(
-                    "[Client/Msg] 删除消息服务器错误，错误码: {}, 错误信息: {}",
+                    "[Client] 删除消息服务器错误，错误码: {}, 错误信息: {}",
                     err_code, err_msg
                 );
                 return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
             }
         }
 
-        info!("[Client/Msg] ✅ 删除消息成功");
+        info!("[Client] ✅ 删除消息成功");
         Ok(())
     }
 
@@ -1258,7 +1344,7 @@ impl OpenIMClient {
             .delete_by_client_msg_id(&conversation_id, &client_msg_id)
             .await?;
         info!(
-            "[Client/Msg] 🗑️ 删除本地消息: conversationID={}, clientMsgID={}",
+            "[Client] 🗑️ 删除本地消息: conversationID={}, clientMsgID={}",
             conversation_id, client_msg_id
         );
         Ok(())
@@ -1316,7 +1402,7 @@ impl OpenIMClient {
             }
         }
 
-        info!("[Client/Msg] ✅ 删除消息（本地+服务端）成功");
+        info!("[Client] ✅ 删除消息（本地+服务端）成功");
         Ok(())
     }
 
@@ -1326,7 +1412,7 @@ impl OpenIMClient {
             store.delete_conversation(&conversation_id).await?;
         }
         info!(
-            "[Client/Msg] 🗑️ 已删除本地会话全部消息，conversationID={}",
+            "[Client] 🗑️ 已删除本地会话全部消息，conversationID={}",
             conversation_id
         );
         Ok(())
@@ -2050,7 +2136,7 @@ impl OpenIMClient {
             "userID": self.config.user_id,
         });
 
-        info!("[Client/Msg] 📡 清空会话消息");
+        info!("[Client] 📡 清空会话消息");
 
         let resp = reqwest::Client::new()
             .post(&url)
@@ -2065,7 +2151,7 @@ impl OpenIMClient {
         let text = resp.text().await?;
         if !status.is_success() {
             error!(
-                "[Client/Msg] 清空会话消息请求失败，HTTP状态: {}, 响应: {}",
+                "[Client] 清空会话消息请求失败，HTTP状态: {}, 响应: {}",
                 status, text
             );
             return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
@@ -2079,14 +2165,14 @@ impl OpenIMClient {
                     .and_then(|v| v.as_str())
                     .unwrap_or("未知错误");
                 error!(
-                    "[Client/Msg] 清空会话消息服务器错误，错误码: {}, 错误信息: {}",
+                    "[Client] 清空会话消息服务器错误，错误码: {}, 错误信息: {}",
                     err_code, err_msg
                 );
                 return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
             }
         }
 
-        info!("[Client/Msg] ✅ 清空会话消息成功");
+        info!("[Client] ✅ 清空会话消息成功");
         Ok(())
     }
 
@@ -2108,7 +2194,7 @@ impl OpenIMClient {
         });
 
         info!(
-            "[Client/Msg] 📡 标记会话已读: conversationID={}, hasReadSeq={}",
+            "[Client] 📡 标记会话已读: conversationID={}, hasReadSeq={}",
             conversation_id, has_read_seq
         );
 
@@ -2125,7 +2211,7 @@ impl OpenIMClient {
         let text = resp.text().await?;
         if !status.is_success() {
             error!(
-                "[Client/Msg] 标记会话已读请求失败，HTTP状态: {}, 响应: {}",
+                "[Client] 标记会话已读请求失败，HTTP状态: {}, 响应: {}",
                 status, text
             );
             return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
@@ -2139,14 +2225,14 @@ impl OpenIMClient {
                     .and_then(|v| v.as_str())
                     .unwrap_or("未知错误");
                 error!(
-                    "[Client/Msg] 标记会话已读服务器错误，错误码: {}, 错误信息: {}",
+                    "[Client] 标记会话已读服务器错误，错误码: {}, 错误信息: {}",
                     err_code, err_msg
                 );
                 return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
             }
         }
 
-        info!("[Client/Msg] ✅ 标记会话已读成功");
+        info!("[Client] ✅ 标记会话已读成功");
         Ok(())
     }
 

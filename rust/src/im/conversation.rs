@@ -3,6 +3,10 @@
 //! 实现 OpenIM SDK 的会话增量同步逻辑，参考 Go 版本的实现
 
 use crate::im::entities::local_conversations;
+use crate::im::types::{
+    handle_http_response, AllConversationsResp, ApiResponse, IncrementalConversationResp,
+    LocalConversation,
+};
 use anyhow::{Context, Result};
 use async_trait::async_trait;
 use openim_protocol::constant;
@@ -17,82 +21,298 @@ use std::sync::Arc;
 use tracing::{debug, error, info, warn};
 use uuid::Uuid;
 
-/// 本地会话数据结构
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LocalConversation {
-    /// 会话 ID
-    #[serde(rename = "conversationID")]
-    pub conversation_id: String,
-    /// 会话类型：1=单聊, 2=普通群聊, 3=超级群聊, 4=通知会话
-    #[serde(rename = "conversationType")]
-    pub conversation_type: i32,
-    /// 用户 ID（单聊时使用）
-    #[serde(rename = "userID")]
-    pub user_id: String,
-    /// 群组 ID（群聊时使用）
-    #[serde(rename = "groupID")]
-    pub group_id: String,
-    /// 显示名称
-    #[serde(rename = "showName")]
-    pub show_name: String,
-    /// 头像 URL
-    #[serde(rename = "faceURL")]
-    pub face_url: String,
-    /// 最新消息
-    #[serde(rename = "latestMsg")]
-    pub latest_msg: String,
-    /// 最新消息发送时间
-    #[serde(rename = "latestMsgSendTime")]
-    pub latest_msg_send_time: i64,
-    /// 未读消息数
-    #[serde(rename = "unreadCount")]
-    pub unread_count: i32,
-    /// 接收消息选项：0=接收并通知, 1=接收不通知, 2=屏蔽
-    #[serde(rename = "recvMsgOpt")]
-    pub recv_msg_opt: i32,
-    /// 是否置顶
-    #[serde(rename = "isPinned")]
-    pub is_pinned: bool,
-    /// 是否私聊
-    #[serde(rename = "isPrivateChat")]
-    pub is_private_chat: bool,
-    /// 阅后即焚时长（秒）
-    #[serde(rename = "burnDuration")]
-    pub burn_duration: i32,
-    /// 群@类型
-    #[serde(rename = "groupAtType")]
-    pub group_at_type: i32,
-    /// 是否不在群内
-    #[serde(rename = "isNotInGroup")]
-    pub is_not_in_group: bool,
-    /// 更新未读数时间
-    #[serde(rename = "updateUnreadCountTime")]
-    pub update_unread_count_time: i64,
-    /// 附加信息
-    #[serde(rename = "attachedInfo")]
-    pub attached_info: String,
-    /// 扩展信息
-    #[serde(rename = "ex")]
-    pub ex: String,
-    /// 草稿文本
-    #[serde(rename = "draftText")]
-    pub draft_text: String,
-    /// 草稿文本时间
-    #[serde(rename = "draftTextTime")]
-    pub draft_text_time: i64,
-    /// 最大序列号
-    #[serde(rename = "maxSeq")]
-    pub max_seq: i64,
-    /// 最小序列号
-    #[serde(rename = "minSeq")]
-    pub min_seq: i64,
-    /// 是否消息销毁
-    #[serde(rename = "isMsgDestruct")]
-    pub is_msg_destruct: bool,
-    /// 消息销毁时间
-    #[serde(rename = "msgDestructTime")]
-    pub msg_destruct_time: i64,
+/// 会话相关的 HTTP API 客户端
+pub struct ConversationApi {
+    client: reqwest::Client,
+    api_base_url: String,
+    user_id: String,
+    token: String,
 }
+
+impl ConversationApi {
+    /// 创建新的会话 API 客户端
+    pub fn new(api_base_url: String, user_id: String, token: String) -> Self {
+        Self {
+            client: reqwest::Client::new(),
+            api_base_url,
+            user_id,
+            token,
+        }
+    }
+
+    // HTTP 响应处理已提取到 types::handle_http_response，所有 API 共用
+
+    /// 从服务器获取每个会话的 MaxSeq 和 HasReadSeq
+    pub async fn get_has_read_and_max_seqs(&self) -> Result<HashMap<String, (i64, i64)>> {
+        let operation_id = Uuid::new_v4().to_string();
+        let url = format!(
+            "{}/msg/get_conversations_has_read_and_max_seq",
+            self.api_base_url
+        );
+
+        info!("[ConvSync/Seq] 📡 请求会话 Seq 信息");
+        debug!("[ConvSync/Seq]   请求URL: {}", url);
+        debug!(
+            "[ConvSync/Seq]   用户ID: {}, 操作ID: {}",
+            self.user_id, operation_id
+        );
+
+        let response = self
+            .client
+            .post(&url)
+            .header("Content-Type", "application/json")
+            .header("operationID", &operation_id)
+            .header("token", &self.token)
+            .json(&serde_json::json!({
+                "userID": self.user_id,
+            }))
+            .send()
+            .await
+            .context("请求失败")?;
+
+        let status = response.status();
+        if !status.is_success() {
+            let text = response.text().await.unwrap_or_default();
+            error!(
+                "[ConvSync/Seq] 会话 Seq 请求失败，HTTP状态: {}, 响应: {}",
+                status, text
+            );
+            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
+        }
+        debug!("[ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: {}", status);
+
+        let text = response.text().await.context("读取响应失败")?;
+        let json_value: serde_json::Value =
+            serde_json::from_str(&text).context("解析 JSON 失败")?;
+
+        // 输出原始响应数据（用于调试）
+        info!("[ConvSync/Seq] 📥 服务器响应原始数据: {}", text);
+
+        // 检查错误码
+        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
+            if err_code != 0 {
+                let err_msg = json_value
+                    .get("errMsg")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("未知错误");
+                error!(
+                    "[ConvSync/Seq] 会话 Seq 服务器错误，错误码: {}, 错误信息: {}",
+                    err_code, err_msg
+                );
+                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
+            }
+        }
+
+        let data = json_value
+            .get("data")
+            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
+
+        // 输出 data 字段内容（用于调试）
+        if let Ok(data_str) = serde_json::to_string_pretty(data) {
+            info!("[ConvSync/Seq] 📊 服务器返回的 data 字段: {}", data_str);
+        }
+
+        // 期望结构：data.seqs: { conversationID: { maxSeq, hasReadSeq, maxSeqTime }, ... }
+        let mut result = HashMap::new();
+
+        // 先尝试作为对象（HashMap）解析
+        if let Some(seqs_obj) = data.get("seqs").and_then(|v| v.as_object()) {
+            info!(
+                "[ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: {}",
+                seqs_obj.len()
+            );
+            for (conv_id, seq_data) in seqs_obj.iter() {
+                if let Some(seq_obj) = seq_data.as_object() {
+                    let max_seq = seq_obj.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
+                    let has_read_seq = seq_obj
+                        .get("hasReadSeq")
+                        .and_then(|v| v.as_i64())
+                        .unwrap_or(0);
+                    let unread = (max_seq - has_read_seq).max(0);
+                    info!(
+                        "[ConvSync/Seq]   conversationID={}, maxSeq={}, hasReadSeq={}, unreadCount={}",
+                        conv_id, max_seq, has_read_seq, unread
+                    );
+                    result.insert(conv_id.clone(), (max_seq, has_read_seq));
+                } else {
+                    warn!("[ConvSync/Seq]   跳过无效条目（seq 数据不是对象）: conversationID={}, data={:?}", conv_id, seq_data);
+                }
+            }
+        }
+        // 兼容旧格式：数组格式（虽然服务器不返回，但保留兼容性）
+        else if let Some(arr) = data.get("seqs").and_then(|v| v.as_array()) {
+            warn!(
+                "[ConvSync/Seq] ⚠️ 收到数组格式的 seqs（旧格式），条目数: {}",
+                arr.len()
+            );
+            for item in arr {
+                if let Some(obj) = item.as_object() {
+                    if let Some(conv_id) = obj.get("conversationID").and_then(|v| v.as_str()) {
+                        let max_seq = obj.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
+                        let has_read_seq =
+                            obj.get("hasReadSeq").and_then(|v| v.as_i64()).unwrap_or(0);
+                        result.insert(conv_id.to_string(), (max_seq, has_read_seq));
+                    }
+                }
+            }
+        } else {
+            warn!("[ConvSync/Seq] ⚠️ data.seqs 字段不存在或格式不正确");
+        }
+
+        info!(
+            "[ConvSync/Seq] ✅ 解析完成，共 {} 个会话的 Seq 信息",
+            result.len()
+        );
+
+        Ok(result)
+    }
+
+    /// 从服务器获取增量会话
+    pub async fn get_incremental_conversations(
+        &self,
+        version: u64,
+        version_id: &str,
+    ) -> Result<IncrementalConversationResp> {
+        let operation_id = Uuid::new_v4().to_string();
+        let url = format!(
+            "{}/conversation/get_incremental_conversations",
+            self.api_base_url
+        );
+
+        info!(
+            "[ConvSync/HTTP] 📡 请求增量会话同步\n   请求URL: {}\n   版本: {}, 版本ID: {}\n   用户ID: {}\n   操作ID: {}",
+            url, version, version_id, self.user_id, operation_id
+        );
+
+        let response = self
+            .client
+            .post(&url)
+            .header("Content-Type", "application/json")
+            .header("operationID", &operation_id)
+            .header("token", &self.token)
+            .json(&serde_json::json!({
+                "userID": self.user_id,
+                "version": version,
+                "versionID": version_id
+            }))
+            .send()
+            .await
+            .context("请求失败")?;
+
+        // 直接反序列化为业务逻辑层结构体
+        let api_resp =
+            handle_http_response::<IncrementalConversationResp>(response, "增量会话同步").await?;
+        let resp = api_resp
+            .data
+            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
+
+        info!(
+            "[ConvSync/HTTP] ✅ 增量会话同步响应\n   全量同步: {}\n   版本ID: {}\n   版本: {}\n   新增: {} 个, 更新: {} 个, 删除: {} 个",
+            resp.full, resp.version_id, resp.version, resp.insert.len(), resp.update.len(), resp.delete.len()
+        );
+        debug!("[ConvSync/HTTP]   删除的会话ID: {:?}", resp.delete);
+
+        Ok(resp)
+    }
+
+    /// 从服务器获取所有会话
+    pub async fn get_all_conversations(&self) -> Result<AllConversationsResp> {
+        let operation_id = Uuid::new_v4().to_string();
+        let url = format!("{}/conversation/get_all_conversations", self.api_base_url);
+
+        info!("[ConvSync/HTTP] 📡 请求全量会话同步");
+        debug!("[ConvSync/HTTP]   请求URL: {}", url);
+        debug!(
+            "[ConvSync/HTTP]   用户ID: {}, 操作ID: {}",
+            self.user_id, operation_id
+        );
+
+        let response = self
+            .client
+            .post(&url)
+            .header("Content-Type", "application/json")
+            .header("operationID", &operation_id)
+            .header("token", &self.token)
+            .json(&serde_json::json!({
+                "ownerUserID": self.user_id
+            }))
+            .send()
+            .await
+            .context("请求失败")?;
+
+        // 直接反序列化为业务逻辑层结构体
+        let api_resp =
+            handle_http_response::<AllConversationsResp>(response, "全量会话同步").await?;
+        let resp = api_resp
+            .data
+            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
+
+        info!(
+            "[ConvSync/HTTP] ✅ 全量会话同步响应，会话数: {}",
+            resp.conversations.len()
+        );
+        debug!(
+            "[ConvSync/HTTP]   会话详情: {:?}",
+            resp.conversations
+                .iter()
+                .map(|c| &c.conversation_id)
+                .collect::<Vec<_>>()
+        );
+
+        Ok(resp)
+    }
+
+    /// 从服务器获取所有会话 ID
+    pub async fn get_all_conversation_ids(&self) -> Result<Vec<String>> {
+        let operation_id = Uuid::new_v4().to_string();
+        let url = format!(
+            "{}/conversation/get_full_conversation_ids",
+            self.api_base_url
+        );
+
+        info!("[ConvSync/HTTP] 📡 请求会话 ID 列表");
+        debug!(
+            "[ConvSync/HTTP]   请求URL: {}, 操作ID: {}",
+            url, operation_id
+        );
+
+        let response = self
+            .client
+            .post(&url)
+            .header("Content-Type", "application/json")
+            .header("operationID", &operation_id)
+            .header("token", &self.token)
+            .json(&serde_json::json!({
+                "userID": self.user_id
+            }))
+            .send()
+            .await
+            .context("请求失败")?;
+
+        // 使用通用响应处理
+        #[derive(Deserialize)]
+        struct ConversationIdsData {
+            #[serde(rename = "conversationIDs")]
+            conversation_ids: Vec<String>,
+        }
+
+        let api_resp = handle_http_response::<ConversationIdsData>(response, "会话ID列表").await?;
+        let data = api_resp
+            .data
+            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
+
+        info!("[ConvSync/HTTP] ✅ 会话 ID 列表响应");
+        info!(
+            "[ConvSync/HTTP]   会话ID数: {}",
+            data.conversation_ids.len()
+        );
+        debug!("[ConvSync/HTTP]   会话ID列表: {:?}", data.conversation_ids);
+
+        Ok(data.conversation_ids)
+    }
+}
+
+// 结构体定义已移动到 types.rs
 
 /// 版本同步信息
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -173,8 +393,8 @@ impl ConversationSyncerConfig {}
 /// 会话同步器
 pub struct ConversationSyncer {
     config: ConversationSyncerConfig,
-    /// HTTP 客户端
-    client: reqwest::Client,
+    /// 会话 API 客户端
+    api: ConversationApi,
     /// 数据库连接
     db: DatabaseConnection,
     /// 会话监听器
@@ -195,7 +415,7 @@ impl ConversationSyncer {
         // 构建SQLite数据库连接URL
         let db_url = config.db_path.clone();
         info!(
-            "[ConvSync/DB] 创建会话同步器，用户ID: {}, SQLite数据库: {}",
+            "[ConvSync] 创建会话同步器，用户ID: {}, SQLite数据库: {}",
             config.user_id, db_url
         );
         let mut opt = ConnectOptions::new(db_url.clone());
@@ -206,8 +426,13 @@ impl ConversationSyncer {
             .context(format!("连接SQLite数据库失败: {}", db_url))?;
 
         // 初始化数据库表
+        let api = ConversationApi::new(
+            config.api_base_url.clone(),
+            config.user_id.clone(),
+            config.token.clone(),
+        );
         let syncer = Self {
-            client: reqwest::Client::new(),
+            api,
             db: db.clone(),
             listener,
             config,
@@ -215,6 +440,87 @@ impl ConversationSyncer {
 
         syncer.init_db().await?;
         Ok(syncer)
+    }
+
+    /// 创建新的会话同步器（使用共享数据库连接）
+    pub async fn with_listener_and_db(
+        config: ConversationSyncerConfig,
+        listener: Arc<dyn ConversationListener>,
+        db: Arc<DatabaseConnection>,
+    ) -> Result<Self> {
+        info!(
+            "[ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: {}",
+            config.user_id
+        );
+
+        let syncer = Self {
+            api: ConversationApi::new(
+                config.api_base_url.clone(),
+                config.user_id.clone(),
+                config.token.clone(),
+            ),
+            db: (*db).clone(),
+            listener,
+            config,
+        };
+
+        // 注意：数据库表初始化已在 client 中完成，这里不需要再次初始化
+        Ok(syncer)
+    }
+
+    /// 使用共享数据库连接初始化数据库表结构（静态方法）
+    pub async fn init_db_with_connection(db: &DatabaseConnection) -> Result<()> {
+        info!("[ConvSync/DB] 初始化会话数据库表结构");
+
+        use sea_orm::ConnectionTrait;
+
+        let sql1 = r#"
+            CREATE TABLE IF NOT EXISTS local_conversations (
+                conversation_id TEXT PRIMARY KEY,
+                conversation_type INTEGER NOT NULL,
+                user_id TEXT NOT NULL DEFAULT '',
+                group_id TEXT NOT NULL DEFAULT '',
+                show_name TEXT NOT NULL DEFAULT '',
+                face_url TEXT NOT NULL DEFAULT '',
+                latest_msg TEXT NOT NULL DEFAULT '',
+                latest_msg_send_time INTEGER NOT NULL DEFAULT 0,
+                unread_count INTEGER NOT NULL DEFAULT 0,
+                recv_msg_opt INTEGER NOT NULL DEFAULT 0,
+                is_pinned INTEGER NOT NULL DEFAULT 0,
+                is_private_chat INTEGER NOT NULL DEFAULT 0,
+                burn_duration INTEGER NOT NULL DEFAULT 0,
+                group_at_type INTEGER NOT NULL DEFAULT 0,
+                is_not_in_group INTEGER NOT NULL DEFAULT 0,
+                update_unread_count_time INTEGER NOT NULL DEFAULT 0,
+                attached_info TEXT NOT NULL DEFAULT '',
+                ex TEXT NOT NULL DEFAULT '',
+                draft_text TEXT NOT NULL DEFAULT '',
+                draft_text_time INTEGER NOT NULL DEFAULT 0,
+                max_seq INTEGER NOT NULL DEFAULT 0,
+                min_seq INTEGER NOT NULL DEFAULT 0,
+                is_msg_destruct INTEGER NOT NULL DEFAULT 0,
+                msg_destruct_time INTEGER NOT NULL DEFAULT 0
+            )
+        "#;
+        db.execute_unprepared(sql1)
+            .await
+            .context("创建会话表失败")?;
+
+        let sql2 = r#"
+            CREATE TABLE IF NOT EXISTS local_version_sync (
+                table_name TEXT NOT NULL,
+                entity_id TEXT NOT NULL,
+                version INTEGER NOT NULL DEFAULT 0,
+                version_id TEXT NOT NULL DEFAULT '',
+                PRIMARY KEY (table_name, entity_id)
+            )
+        "#;
+        db.execute_unprepared(sql2)
+            .await
+            .context("创建版本同步表失败")?;
+
+        info!("[ConvSync/DB] 数据库表初始化完成");
+        Ok(())
     }
 
     /// 初始化数据库表结构
@@ -515,12 +821,12 @@ impl ConversationSyncer {
                 | constant::CONVERSATION_DELETE_NOTIFICATION
                 | constant::HAS_READ_RECEIPT => {
                     info!(
-                        "[ConvSync/Notify] 收到会话通知，contentType={}，触发增量会话同步",
+                        "[ConvSync] 收到会话通知，contentType={}，触发增量会话同步",
                         msg.content_type
                     );
                     if let Err(e) = self.incr_sync_conversations().await {
                         warn!(
-                            "[ConvSync/Notify] 会话通知触发增量同步失败: {}",
+                            "[ConvSync] 会话通知触发增量同步失败: {}",
                             e
                         );
                     }
@@ -674,158 +980,12 @@ impl ConversationSyncer {
             .await
             .context("查询会话列表失败")?;
 
-        let total: i32 = conversations
-            .iter()
-            .map(|c| c.unread_count)
-            .sum();
+        let total: i32 = conversations.iter().map(|c| c.unread_count).sum();
 
         Ok(total)
     }
 
-    /// 从服务器获取每个会话的 MaxSeq 和 HasReadSeq
-    async fn get_has_read_and_max_seqs_from_server(&self) -> Result<HashMap<String, (i64, i64)>> {
-        let operation_id = Uuid::new_v4().to_string();
-        let url = format!(
-            "{}/msg/get_conversations_has_read_and_max_seq",
-            self.config.api_base_url
-        );
-
-        let req_json = serde_json::json!({
-            "userID": self.config.user_id,
-        });
-
-        info!("[ConvSync/Seq] 📡 请求会话 Seq 信息");
-        debug!("[ConvSync/Seq]   请求URL: {}", url);
-        debug!("[ConvSync/Seq]   用户ID: {}", self.config.user_id);
-        debug!("[ConvSync/Seq]   操作ID: {}", operation_id);
-
-        let response = self
-            .client
-            .post(&url)
-            .header("Content-Type", "application/json")
-            .header("operationID", &operation_id)
-            .header("token", &self.config.token)
-            .json(&req_json)
-            .send()
-            .await
-            .context("请求失败")?;
-
-        let status = response.status();
-        if !status.is_success() {
-            let text = response.text().await.unwrap_or_default();
-            error!(
-                "[ConvSync/Seq] 会话 Seq 请求失败，HTTP状态: {}, 响应: {}",
-                status, text
-            );
-            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
-        }
-        debug!("[ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: {}", status);
-
-        let text = response.text().await.context("读取响应失败")?;
-        let json_value: serde_json::Value =
-            serde_json::from_str(&text).context("解析 JSON 失败")?;
-
-        // 输出原始响应数据（用于调试）
-        info!("[ConvSync/Seq] 📥 服务器响应原始数据: {}", text);
-
-        // 检查错误码
-        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
-            if err_code != 0 {
-                let err_msg = json_value
-                    .get("errMsg")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("未知错误");
-                error!(
-                    "[ConvSync/Seq] 会话 Seq 服务器错误，错误码: {}, 错误信息: {}",
-                    err_code, err_msg
-                );
-                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
-            }
-        }
-
-        let data = json_value
-            .get("data")
-            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
-
-        // 输出 data 字段内容（用于调试）
-        if let Ok(data_str) = serde_json::to_string_pretty(data) {
-            info!("[ConvSync/Seq] 📊 服务器返回的 data 字段: {}", data_str);
-        }
-
-        // 期望结构：data.seqs: { conversationID: { maxSeq, hasReadSeq, maxSeqTime }, ... }
-        // 参考 Go 版本：resp.Seqs 是 map[string]*msg.Seqs
-        let mut result = HashMap::new();
-
-        // 先尝试作为对象（HashMap）解析
-        if let Some(seqs_obj) = data.get("seqs").and_then(|v| v.as_object()) {
-            info!(
-                "[ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: {}",
-                seqs_obj.len()
-            );
-            for (conv_id, seq_data) in seqs_obj.iter() {
-                if let Some(seq_obj) = seq_data.as_object() {
-                    let max_seq = seq_obj.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                    let has_read_seq = seq_obj
-                        .get("hasReadSeq")
-                        .and_then(|v| v.as_i64())
-                        .unwrap_or(0);
-                    let unread = (max_seq - has_read_seq).max(0);
-                    info!(
-                        "[ConvSync/Seq]   conversationID={}, maxSeq={}, hasReadSeq={}, unreadCount={}",
-                        conv_id, max_seq, has_read_seq, unread
-                    );
-                    result.insert(conv_id.clone(), (max_seq, has_read_seq));
-                } else {
-                    warn!("[ConvSync/Seq]   跳过无效条目（seq 数据不是对象）: conversationID={}, data={:?}", conv_id, seq_data);
-                }
-            }
-        }
-        // 兼容旧格式：数组格式（虽然服务器不返回，但保留兼容性）
-        else if let Some(arr) = data
-            .get("seqs")
-            .or_else(|| data.get("conversations"))
-            .and_then(|v| v.as_array())
-        {
-            info!(
-                "[ConvSync/Seq] 📋 解析会话 Seq 数组（兼容格式），条目数: {}",
-                arr.len()
-            );
-            for (idx, item) in arr.iter().enumerate() {
-                if let Some(conv_id) = item
-                    .get("conversationID")
-                    .and_then(|v| v.as_str())
-                    .map(|s| s.to_string())
-                {
-                    let max_seq = item.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                    let has_read_seq = item.get("hasReadSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                    let unread = (max_seq - has_read_seq).max(0);
-                    info!(
-                        "[ConvSync/Seq]   [{}/{}] conversationID={}, maxSeq={}, hasReadSeq={}, unreadCount={}",
-                        idx + 1, arr.len(), conv_id, max_seq, has_read_seq, unread
-                    );
-                    result.insert(conv_id, (max_seq, has_read_seq));
-                } else {
-                    warn!(
-                        "[ConvSync/Seq]   [{}/{}] 跳过无效条目（缺少 conversationID）: {:?}",
-                        idx + 1,
-                        arr.len(),
-                        item
-                    );
-                }
-            }
-        } else {
-            warn!("[ConvSync/Seq] ⚠️ 响应中未找到 seqs 字段（期望对象或数组）");
-            if let Ok(data_str) = serde_json::to_string_pretty(data) {
-                warn!("[ConvSync/Seq]   实际 data 内容: {}", data_str);
-            }
-        }
-
-        info!(
-            "[ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 {} 个会话",
-            result.len()
-        );
-        Ok(result)
-    }
+    // HTTP 接口方法已移动到 ConversationApi 结构体中
 
     /// 基于服务器的 MaxSeq / HasReadSeq 校正本地未读数
     pub async fn sync_unread_by_seq(&self) -> Result<()> {
@@ -839,7 +999,7 @@ impl ConversationSyncer {
         }
 
         // 2. 从服务器获取每个会话的 MaxSeq/HasReadSeq
-        let seqs = self.get_has_read_and_max_seqs_from_server().await?;
+        let seqs = self.api.get_has_read_and_max_seqs().await?;
         if seqs.is_empty() {
             info!("[ConvSync/Seq] 服务器未返回会话 Seq 信息，跳过未读数校正");
             return Ok(());
@@ -902,13 +1062,12 @@ impl ConversationSyncer {
                 "[ConvSync/Seq] 发现本地缺失会话 {} 个，尝试从服务器补齐详情",
                 missing_convs.len()
             );
-            match self.get_all_conversation_list_from_server().await {
+            match self.api.get_all_conversations().await {
                 Ok(all_resp) => {
                     let server_map: HashMap<String, LocalConversation> = all_resp
                         .conversations
                         .iter()
-                        .map(Self::server_conversation_to_local)
-                        .map(|c| (c.conversation_id.clone(), c))
+                        .map(|c| (c.conversation_id.clone(), c.clone()))
                         .collect();
 
                     for (conv_id, (max_seq, has_read_seq)) in missing_convs.into_iter() {
@@ -984,338 +1143,7 @@ impl ConversationSyncer {
         Ok(())
     }
 
-    /// 从服务器获取增量会话
-    async fn get_incremental_conversation_from_server(
-        &self,
-        version: u64,
-        version_id: &str,
-    ) -> Result<conversation::GetIncrementalConversationResp> {
-        let operation_id = Uuid::new_v4().to_string();
-        let url = format!(
-            "{}/conversation/get_incremental_conversations",
-            self.config.api_base_url
-        );
-
-        // 手动构建 JSON 请求体
-        let req_json = serde_json::json!({
-            "userID": self.config.user_id,
-            "version": version,
-            "versionID": version_id
-        });
-
-        info!(
-            "[ConvSync/HTTP] 📡 请求增量会话同步\n   请求URL: {}\n   版本: {}, 版本ID: {}\n   用户ID: {}\n   操作ID: {}",
-            url,
-            version, version_id,
-            self.config.user_id,
-            operation_id
-        );
-
-        let response = self
-            .client
-            .post(&url)
-            .header("Content-Type", "application/json")
-            .header("operationID", &operation_id)
-            .header("token", &self.config.token)
-            .json(&req_json)
-            .send()
-            .await
-            .context("请求失败")?;
-
-        let status = response.status();
-        if !status.is_success() {
-            let text = response.text().await.unwrap_or_default();
-            error!(
-                "[ConvSync/HTTP] 增量会话同步请求失败，HTTP状态: {}, 响应: {}",
-                status, text
-            );
-            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
-        }
-        debug!("[ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: {}", status);
-
-        // 解析 JSON 响应
-        let text = response.text().await.context("读取响应失败")?;
-        let json_value: serde_json::Value =
-            serde_json::from_str(&text).context("解析 JSON 失败")?;
-
-        // 检查错误码
-        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
-            if err_code != 0 {
-                let err_msg = json_value
-                    .get("errMsg")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("未知错误");
-                error!(
-                    "[ConvSync/HTTP] 增量会话同步服务器错误，错误码: {}, 错误信息: {}",
-                    err_code, err_msg
-                );
-                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
-            }
-        }
-
-        // 从 data 字段解析响应
-        let data = json_value
-            .get("data")
-            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
-
-        // 手动构建 protobuf 响应，直接从 JSON 解析
-        let version_id_str = data
-            .get("versionID")
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
-        let version_value = data.get("version").and_then(|v| v.as_u64()).unwrap_or(0);
-
-        // 解析 insert 数组
-        let inserts: Vec<conversation::Conversation> = data
-            .get("insert")
-            .and_then(|v| v.as_array())
-            .map(|arr| {
-                arr.iter()
-                    .filter_map(Self::json_to_server_conversation)
-                    .collect()
-            })
-            .unwrap_or_default();
-
-        // 解析 update 数组
-        let updates: Vec<conversation::Conversation> = data
-            .get("update")
-            .and_then(|v| v.as_array())
-            .map(|arr| {
-                arr.iter()
-                    .filter_map(Self::json_to_server_conversation)
-                    .collect()
-            })
-            .unwrap_or_default();
-
-        let resp = conversation::GetIncrementalConversationResp {
-            full: data.get("full").and_then(|v| v.as_bool()).unwrap_or(false),
-            version_id: version_id_str.clone(),
-            version: version_value,
-            insert: inserts,
-            update: updates,
-            delete: data
-                .get("delete")
-                .and_then(|v| v.as_array())
-                .map(|arr| {
-                    arr.iter()
-                        .filter_map(|v| v.as_str().map(|s| s.to_string()))
-                        .collect()
-                })
-                .unwrap_or_default(),
-        };
-
-        info!("[ConvSync/HTTP] ✅ 增量会话同步响应");
-        info!("[ConvSync/HTTP]   全量同步: {}", resp.full);
-        info!("[ConvSync/HTTP]   版本ID: {}", resp.version_id);
-        info!("[ConvSync/HTTP]   版本: {}", resp.version);
-        info!(
-            "[ConvSync/HTTP]   新增: {} 个, 更新: {} 个, 删除: {} 个",
-            resp.insert.len(),
-            resp.update.len(),
-            resp.delete.len()
-        );
-        debug!("[ConvSync/HTTP]   删除的会话ID: {:?}", resp.delete);
-
-        Ok(resp)
-    }
-
-    /// 从服务器获取所有会话
-    async fn get_all_conversation_list_from_server(
-        &self,
-    ) -> Result<conversation::GetAllConversationsResp> {
-        let operation_id = Uuid::new_v4().to_string();
-        let url = format!(
-            "{}/conversation/get_all_conversations",
-            self.config.api_base_url
-        );
-
-        let req_json = serde_json::json!({
-            "ownerUserID": self.config.user_id
-        });
-
-        info!("[ConvSync/HTTP] 📡 请求全量会话同步");
-        debug!("[ConvSync/HTTP]   请求URL: {}", url);
-        debug!("[ConvSync/HTTP]   用户ID: {}", self.config.user_id);
-        debug!("[ConvSync/HTTP]   操作ID: {}", operation_id);
-
-        let response = self
-            .client
-            .post(&url)
-            .header("Content-Type", "application/json")
-            .header("operationID", &operation_id)
-            .header("token", &self.config.token)
-            .json(&req_json)
-            .send()
-            .await
-            .context("请求失败")?;
-
-        let status = response.status();
-        if !status.is_success() {
-            let text = response.text().await.unwrap_or_default();
-            error!(
-                "[ConvSync/HTTP] 全量会话同步请求失败，HTTP状态: {}, 响应: {}",
-                status, text
-            );
-            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
-        }
-        debug!("[ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: {}", status);
-
-        let text = response.text().await.context("读取响应失败")?;
-        let json_value: serde_json::Value =
-            serde_json::from_str(&text).context("解析 JSON 失败")?;
-
-        // 检查错误码
-        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
-            if err_code != 0 {
-                let err_msg = json_value
-                    .get("errMsg")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("未知错误");
-                error!(
-                    "[ConvSync/HTTP] 全量会话同步服务器错误，错误码: {}, 错误信息: {}",
-                    err_code, err_msg
-                );
-                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
-            }
-        }
-
-        let data = json_value
-            .get("data")
-            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
-
-        let conversations = data
-            .get("conversations")
-            .and_then(|v| v.as_array())
-            .map(|arr| {
-                arr.iter()
-                    .filter_map(Self::json_to_server_conversation)
-                    .collect()
-            })
-            .unwrap_or_default();
-
-        let resp = conversation::GetAllConversationsResp { conversations };
-
-        info!("[ConvSync/HTTP] ✅ 全量会话同步响应");
-        info!("[ConvSync/HTTP]   会话数: {}", resp.conversations.len());
-        debug!(
-            "[ConvSync/HTTP]   会话详情: {:?}",
-            resp.conversations
-                .iter()
-                .map(|c| &c.conversation_id)
-                .collect::<Vec<_>>()
-        );
-
-        Ok(resp)
-    }
-
-    /// 从服务器获取所有会话 ID
-    async fn get_all_conversation_ids_from_server(&self) -> Result<Vec<String>> {
-        let operation_id = Uuid::new_v4().to_string();
-        let url = format!(
-            "{}/conversation/get_full_conversation_ids",
-            self.config.api_base_url
-        );
-
-        let req_json = serde_json::json!({
-            "userID": self.config.user_id
-        });
-
-        info!("[ConvSync/HTTP] 📡 请求会话 ID 列表");
-        debug!("[ConvSync/HTTP]   请求URL: {}", url);
-        debug!("[ConvSync/HTTP]   操作ID: {}", operation_id);
-
-        let response = self
-            .client
-            .post(&url)
-            .header("Content-Type", "application/json")
-            .header("operationID", &operation_id)
-            .header("token", &self.config.token)
-            .json(&req_json)
-            .send()
-            .await
-            .context("请求失败")?;
-
-        let status = response.status();
-        if !status.is_success() {
-            let text = response.text().await.unwrap_or_default();
-            error!(
-                "[ConvSync/HTTP] 会话ID列表请求失败，HTTP状态: {}, 响应: {}",
-                status, text
-            );
-            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
-        }
-        debug!("[ConvSync/HTTP] 会话ID列表请求成功，HTTP状态: {}", status);
-
-        let text = response.text().await.context("读取响应失败")?;
-        let json_value: serde_json::Value =
-            serde_json::from_str(&text).context("解析 JSON 失败")?;
-
-        // 检查错误码
-        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
-            if err_code != 0 {
-                let err_msg = json_value
-                    .get("errMsg")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("未知错误");
-                error!(
-                    "[ConvSync/HTTP] 会话ID列表服务器错误，错误码: {}, 错误信息: {}",
-                    err_code, err_msg
-                );
-                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
-            }
-        }
-
-        let data = json_value
-            .get("data")
-            .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
-
-        let conversation_ids: Vec<String> = data
-            .get("conversationIDs")
-            .and_then(|v| v.as_array())
-            .map(|arr| {
-                arr.iter()
-                    .filter_map(|v| v.as_str().map(|s| s.to_string()))
-                    .collect()
-            })
-            .unwrap_or_default();
-
-        info!("[ConvSync/HTTP] ✅ 会话 ID 列表响应");
-        info!("[ConvSync/HTTP]   会话ID数: {}", conversation_ids.len());
-        debug!("[ConvSync/HTTP]   会话ID列表: {:?}", conversation_ids);
-
-        Ok(conversation_ids)
-    }
-
-    /// 将服务器会话转换为本地会话
-    fn server_conversation_to_local(server_conv: &conversation::Conversation) -> LocalConversation {
-        LocalConversation {
-            conversation_id: server_conv.conversation_id.clone(),
-            conversation_type: server_conv.conversation_type,
-            user_id: server_conv.user_id.clone(),
-            group_id: server_conv.group_id.clone(),
-            show_name: String::new(),  // 需要从用户/群组信息获取
-            face_url: String::new(),   // 需要从用户/群组信息获取
-            latest_msg: String::new(), // 需要从消息获取
-            latest_msg_send_time: 0,   // 需要从消息获取
-            unread_count: 0,           // 字段不存在，使用默认值
-            recv_msg_opt: server_conv.recv_msg_opt,
-            is_pinned: server_conv.is_pinned,
-            is_private_chat: server_conv.is_private_chat,
-            burn_duration: server_conv.burn_duration,
-            group_at_type: server_conv.group_at_type,
-            is_not_in_group: false,      // 字段不存在，使用默认值
-            update_unread_count_time: 0, // 字段不存在，使用默认值
-            attached_info: server_conv.attached_info.clone(),
-            ex: server_conv.ex.clone(),
-            draft_text: String::new(),
-            draft_text_time: 0, // 字段不存在，使用默认值
-            max_seq: server_conv.max_seq,
-            min_seq: server_conv.min_seq,
-            is_msg_destruct: server_conv.is_msg_destruct,
-            msg_destruct_time: server_conv.msg_destruct_time,
-        }
-    }
+    // HTTP 接口方法已移动到 ConversationApi 结构体中
 
     /// 将 JSON 对象转换为服务器会话结构（conversation::Conversation）
     fn json_to_server_conversation(v: &serde_json::Value) -> Option<conversation::Conversation> {
@@ -1564,7 +1392,7 @@ impl ConversationSyncer {
         // 3. 判断是否需要全量同步
         let reinstalled = local_ids.is_empty();
         if reinstalled {
-            warn!("本地无会话，执行全量同步...");
+            warn!("[ConvSync] 本地无会话，执行全量同步...");
             self.listener.on_sync_server_start(true).await;
             return self.full_sync().await;
         }
@@ -1574,7 +1402,7 @@ impl ConversationSyncer {
             (vs.version, vs.version_id)
         } else {
             // 如果没有版本信息，先获取全量会话 ID 列表
-            let server_ids_vec = self.get_all_conversation_ids_from_server().await?;
+            let server_ids_vec = self.api.get_all_conversation_ids().await?;
             let server_ids: std::collections::HashSet<String> =
                 server_ids_vec.iter().cloned().collect();
             let local_ids_set: std::collections::HashSet<String> =
@@ -1600,15 +1428,11 @@ impl ConversationSyncer {
             }
 
             // 否则从全量同步获取版本信息
-            let all_resp = self.get_all_conversation_list_from_server().await?;
-            let server_convs: Vec<LocalConversation> = all_resp
-                .conversations
-                .iter()
-                .map(Self::server_conversation_to_local)
-                .collect();
+            let all_resp = self.api.get_all_conversations().await?;
+            let server_convs: Vec<LocalConversation> = all_resp.conversations.clone();
 
             // 先获取 seqs 信息用于设置未读数
-            let seqs_map = match self.get_has_read_and_max_seqs_from_server().await {
+            let seqs_map = match self.api.get_has_read_and_max_seqs().await {
                 Ok(seqs) => {
                     info!(
                         "[ConvSync] 获取到 {} 个会话的 seqs 信息，用于设置未读数",
@@ -1657,7 +1481,8 @@ impl ConversationSyncer {
 
         // 5. 调用增量同步接口
         let resp = match self
-            .get_incremental_conversation_from_server(version, &version_id)
+            .api
+            .get_incremental_conversations(version, &version_id)
             .await
         {
             Ok(resp) => resp,
@@ -1683,18 +1508,18 @@ impl ConversationSyncer {
         info!("[ConvSync] 处理新增会话，数量: {}", resp.insert.len());
         for server_conv in resp.insert.iter() {
             debug!("[ConvSync]   新增会话ID: {}", server_conv.conversation_id);
-            server_conversations.push(Self::server_conversation_to_local(server_conv));
+            server_conversations.push(server_conv.clone());
         }
 
         // 处理更新
         info!("[ConvSync] 处理更新会话，数量: {}", resp.update.len());
         for server_conv in resp.update.iter() {
             debug!("[ConvSync]   更新会话ID: {}", server_conv.conversation_id);
-            server_conversations.push(Self::server_conversation_to_local(server_conv));
+            server_conversations.push(server_conv.clone());
         }
 
         // 8. 先获取 seqs 信息用于设置未读数（参考 Go 版本的 SyncAllConversationHashReadSeqs）
-        let seqs_map = match self.get_has_read_and_max_seqs_from_server().await {
+        let seqs_map = match self.api.get_has_read_and_max_seqs().await {
             Ok(seqs) => {
                 info!(
                     "[ConvSync] 获取到 {} 个会话的 seqs 信息，用于设置未读数",
@@ -1769,7 +1594,7 @@ impl ConversationSyncer {
         self.listener.on_sync_server_progress(10).await;
 
         // 1. 获取服务器所有会话
-        let resp = match self.get_all_conversation_list_from_server().await {
+        let resp = match self.api.get_all_conversations().await {
             Ok(resp) => resp,
             Err(e) => {
                 error!("[ConvSync] 全量同步失败: {}", e);
@@ -1788,11 +1613,7 @@ impl ConversationSyncer {
         self.listener.on_sync_server_progress(30).await;
 
         // 2. 转换为本地格式
-        let server_conversations: Vec<LocalConversation> = resp
-            .conversations
-            .iter()
-            .map(Self::server_conversation_to_local)
-            .collect();
+        let server_conversations: Vec<LocalConversation> = resp.conversations.clone();
         debug!(
             "[ConvSync] 已转换 {} 个会话为本地格式",
             server_conversations.len()
@@ -1805,7 +1626,7 @@ impl ConversationSyncer {
         info!("[ConvSync] 本地已有 {} 个会话", local_conversations.len());
 
         // 4. 先获取 seqs 信息用于设置未读数（参考 Go 版本的 SyncAllConversationHashReadSeqs）
-        let seqs_map = match self.get_has_read_and_max_seqs_from_server().await {
+        let seqs_map = match self.api.get_has_read_and_max_seqs().await {
             Ok(seqs) => {
                 info!(
                     "[ConvSync] 获取到 {} 个会话的 seqs 信息，用于设置未读数",
@@ -1954,11 +1775,11 @@ mod tests {
         .await
         {
             Ok(info) => {
-                info!("✅ 登录成功！");
+                info!("[ConvSync/Test] ✅ 登录成功！");
                 info
             }
             Err(e) => {
-                error!("登录失败: {}", e);
+                error!("[ConvSync/Test] 登录失败: {}", e);
                 return Err(anyhow::anyhow!("登录失败: {}", e));
             }
         };
@@ -1989,31 +1810,37 @@ mod tests {
     #[async_trait]
     impl ConversationListener for TestConversationListener {
         async fn on_sync_server_start(&self, reinstalled: bool) {
-            info!("开始同步: reinstalled={}", reinstalled);
+            info!("[ConvSync/Test] 开始同步: reinstalled={}", reinstalled);
         }
         async fn on_sync_server_finish(&self, reinstalled: bool) {
-            info!("同步完成: reinstalled={}", reinstalled);
+            info!("[ConvSync/Test] 同步完成: reinstalled={}", reinstalled);
         }
         async fn on_sync_server_progress(&self, progress: i32) {
-            info!("同步进度: progress={}", progress);
+            info!("[ConvSync/Test] 同步进度: progress={}", progress);
         }
         async fn on_sync_server_failed(&self, reinstalled: bool) {
-            info!("同步失败: reinstalled={}", reinstalled);
+            info!("[ConvSync/Test] 同步失败: reinstalled={}", reinstalled);
         }
         async fn on_new_conversation(&self, conversation_list: String) {
-            info!("新会话: conversation_list={}", conversation_list);
+            info!(
+                "[ConvSync/Test] 新会话: conversation_list={}",
+                conversation_list
+            );
         }
         async fn on_conversation_changed(&self, conversation_list: String) {
-            info!("会话变更: conversation_list={}", conversation_list);
+            info!(
+                "[ConvSync/Test] 会话变更: conversation_list={}",
+                conversation_list
+            );
         }
         async fn on_total_unread_message_count_changed(&self, total_unread_count: i32) {
             info!(
-                "总未读消息数变更: total_unread_count={}",
+                "[ConvSync/Test] 总未读消息数变更: total_unread_count={}",
                 total_unread_count
             );
         }
         async fn on_conversation_user_input_status_changed(&self, change: String) {
-            info!("会话用户输入状态变更: change={}", change);
+            info!("[ConvSync/Test] 会话用户输入状态变更: change={}", change);
         }
     }
 }
