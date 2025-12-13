@@ -1,0 +1,34 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug openim-cli (Debug Console)",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin",
+                    "openim-cli"
+                ],
+                "filter": {
+                    "name": "openim-cli",
+                    "kind": "bin"
+                },
+                "cwd": "${workspaceFolder}/rust"
+            },
+            "args": [
+                "--phone",
+                "17764338283"
+            ],
+            "cwd": "${workspaceFolder}/rust",
+            "console": "internalConsole",
+            "sourceLanguages": [
+                "rust"
+            ],
+            "env": {
+                "RUST_LOG": "info,openim_sdk_core_rust=debug"
+            }
+        }
+    ]
+}
