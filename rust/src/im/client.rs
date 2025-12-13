@@ -4,7 +4,9 @@
 
 use crate::im::advanced_msg_listener::{AdvancedMsgListener, EmptyAdvancedMsgListener};
 use crate::im::conversation::{
-    ConversationListener, ConversationSyncer, ConversationSyncerConfig, EmptyConversationListener,
+    listener::{ConversationListener, EmptyConversationListener},
+    models::ConversationSyncerConfig,
+    service::ConversationSyncer,
 };
 use crate::im::friend::{FriendListener, FriendSyncer, FriendSyncerConfig, LocalFriend};
 use crate::im::message_store::MessageStore;
@@ -14,7 +16,7 @@ use crate::im::msg::{
 };
 use crate::im::serialization::{compress_gzip, decompress_gzip, generate_msg_id};
 use crate::im::types::LocalConversation;
-use crate::im::types::{msg_type, ApiResponse, OpenIMResp, WebSocketConnectResp};
+use crate::im::types::{msg_type, OpenIMResp, WebSocketConnectResp};
 use anyhow::{Context, Result};
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};

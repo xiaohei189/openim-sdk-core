@@ -1426,3 +1426,93 @@
 2025-12-13T17:12:41.617268Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
 2025-12-13T17:12:41.617293Z  INFO src/bin/openim-cli.rs:142: [CLI/Friend] 📝 好友申请变更: []
 2025-12-13T17:12:41.617308Z  INFO src/im/client.rs:370: [Client] ✅ 好友同步完成
+2025-12-13T18:09:21.738499Z  INFO src/bin/openim-cli.rs:77: [CLI] 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T18:09:21.738525Z  INFO src/bin/openim-cli.rs:201: [CLI] 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T18:09:21.738534Z  INFO src/bin/openim-cli.rs:202: [CLI] 📱 手机号: 17764338283
+2025-12-13T18:09:21.738544Z  INFO src/bin/openim-cli.rs:203: [CLI] ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T18:09:21.738552Z  INFO src/bin/openim-cli.rs:206: [CLI] 🔐 正在登录...
+2025-12-13T18:09:21.738772Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T18:09:21.738784Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T18:09:21.738793Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T18:09:21.738803Z DEBUG src/im/auth.rs:51:    OperationID: ba35bd3e-cbf7-4370-986c-e10d66f6642b
+2025-12-13T18:09:21.747381Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDI1MzYxLCJpYXQiOjE3NjU2NDkzNTZ9.m4-_tD4LCTsdLcXkj0jax0C52kn7EF93PJeCGCXmZaE","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQyNTM2MSwibmJmIjoxNzY1NjQ5MzAxLCJpYXQiOjE3NjU2NDkzNjF9.i5qUVuhSZSI0Kjx_TPe2NCco3erUt6qTZ98UBLwyYN0","userID":"3217717393"}}
+2025-12-13T18:09:21.747475Z  INFO src/bin/openim-cli.rs:221: [CLI] ✅ 登录成功！用户ID: 3217717393
+2025-12-13T18:09:21.747506Z  INFO src/bin/openim-cli.rs:233: [CLI] 🔗 正在连接服务器...
+2025-12-13T18:09:21.747538Z  INFO src/im/client.rs:242: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T18:09:21.748765Z  INFO src/im/client.rs:248: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T18:09:30.268570Z DEBUG src/im/client.rs:259: [Client] 📥 WebSocket 连接响应: {"errCode":0,"errMsg":"","errDlt":""}
+2025-12-13T18:09:30.268612Z  INFO src/im/client.rs:263: [Client] ✅ 服务器连接鉴权成功
+2025-12-13T18:09:30.268658Z  INFO src/im/client.rs:304: [Client] 💓 启动心跳
+2025-12-13T18:09:30.268671Z  INFO src/im/client.rs:305: [Client] 📥 开始监听服务器消息
+2025-12-13T18:09:30.268683Z  INFO src/im/client.rs:308: [Client] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T18:09:30.268713Z  INFO src/bin/openim-cli.rs:181: [CLI/Message] 🔗 已连接: 连接成功
+2025-12-13T18:09:30.269470Z  INFO src/im/client.rs:321: [Client] 📋 初始化数据库表结构
+2025-12-13T18:09:30.269490Z  INFO src/im/conversation_dao.rs:83: [ConvDAO/DB] 初始化会话数据库表结构
+2025-12-13T18:09:30.269800Z  INFO src/im/conversation_dao.rs:132: [ConvDAO/DB] 数据库表初始化完成
+2025-12-13T18:09:30.269819Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T18:09:30.269893Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T18:09:30.269908Z  INFO src/im/conversation/service.rs:83: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T18:09:30.270026Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T18:09:30.270042Z  INFO src/im/client.rs:343: [Client] 🔄 启动会话增量同步任务
+2025-12-13T18:09:30.270096Z  INFO src/im/conversation/service.rs:629: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T18:09:30.270102Z  INFO src/im/client.rs:369: [Client] 🔄 启动好友增量同步任务
+2025-12-13T18:09:30.270153Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T18:09:30.270606Z DEBUG src/im/conversation/service.rs:635: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+2025-12-13T18:09:30.270762Z  INFO src/bin/openim-cli.rs:241: [CLI] ✅ 连接成功！
+2025-12-13T18:09:30.270789Z DEBUG src/im/conversation/service.rs:988: [ConvSync] 获取所有会话列表
+2025-12-13T18:09:30.270930Z DEBUG src/im/conversation/service.rs:946: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T18:09:30.270939Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T18:09:30.271599Z DEBUG src/im/conversation_dao.rs:173: [ConvDAO] 获取本地会话列表，共 2 个会话
+2025-12-13T18:09:30.271976Z DEBUG src/im/conversation_dao.rs:173: [ConvDAO] 获取本地会话列表，共 2 个会话
+2025-12-13T18:09:30.272002Z DEBUG src/im/conversation/service.rs:953: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T18:09:30.272016Z DEBUG src/im/conversation/service.rs:977: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T18:09:30.272031Z  INFO src/bin/openim-cli.rs:247: [CLI] 📋 会话列表（共 0 个）:
+2025-12-13T18:09:30.272268Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T18:09:30.272659Z DEBUG src/im/conversation_dao.rs:192: [ConvDAO] 获取本地会话ID列表，共 2 个
+2025-12-13T18:09:30.272679Z  INFO src/im/conversation/service.rs:646: [ConvSync] 本地会话数: 2
+2025-12-13T18:09:30.272690Z  INFO src/im/conversation/service.rs:729: [ConvSync] 使用增量同步，版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+2025-12-13T18:09:30.272702Z  INFO src/bin/openim-cli.rs:87: [CLI/Conversation] 🔄 同步开始: reinstalled=false
+2025-12-13T18:09:30.272714Z  INFO src/bin/openim-cli.rs:101: [CLI/Conversation] 📊 同步进度: 10%
+2025-12-13T18:09:30.272738Z  INFO src/im/conversation/api.rs:169: [ConvAPI] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+   用户ID: 3217717393
+   操作ID: 55fc3223-ddb0-4f0d-a219-97e9b73bd5c1
+2025-12-13T18:09:30.273086Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T18:09:30.273104Z  INFO src/bin/openim-cli.rs:263: [CLI] 👥 好友列表（共 1 个）
+2025-12-13T18:09:30.273257Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T18:09:30.273294Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T18:09:30.273307Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T18:09:30.273317Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T18:09:30.273326Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: 9efc1ac6-d7af-4df8-92d0-3d7835eb74d7
+2025-12-13T18:09:30.273596Z  INFO src/bin/openim-cli.rs:267: [CLI] 📬 总未读数: 37
+2025-12-13T18:09:30.273617Z  INFO src/bin/openim-cli.rs:271: [CLI] 📥 开始监听消息...
+2025-12-13T18:09:30.273627Z  INFO src/bin/openim-cli.rs:272: [CLI] 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T18:09:30.273641Z  INFO src/bin/openim-cli.rs:278: [CLI] ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T18:09:30.275164Z DEBUG src/im/types.rs:96: [HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T18:09:30.275247Z ERROR src/im/conversation/service.rs:746: [ConvSync] 增量同步失败: 反序列化响应失败
+2025-12-13T18:09:30.275260Z ERROR src/bin/openim-cli.rs:105: [CLI/Conversation] ❌ 同步失败: reinstalled=false
+2025-12-13T18:09:30.275274Z ERROR src/im/client.rs:347: [Client] ❌ 会话同步失败: 反序列化响应失败
+2025-12-13T18:09:30.275354Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T18:09:30.275409Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T18:09:30.275421Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T18:09:30.275435Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T18:09:30.275455Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T18:09:30.275477Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T18:09:30.275797Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T18:09:30.275812Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T18:09:30.275833Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T18:09:30.275845Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T18:09:30.275858Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T18:09:30.275870Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 5fe18263-3f7b-4386-9826-3a27eecd41ca
+2025-12-13T18:09:30.277054Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T18:09:30.277098Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T18:09:30.277115Z  INFO src/bin/openim-cli.rs:138: [CLI/Friend] 🚫 黑名单变更: null
+2025-12-13T18:09:30.277129Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T18:09:30.277139Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T18:09:30.277149Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T18:09:30.277157Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: 94079496-dbd0-4151-9a14-1a5cedc9b9ca
+2025-12-13T18:09:30.279243Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T18:09:30.279311Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T18:09:30.279332Z  INFO src/bin/openim-cli.rs:142: [CLI/Friend] 📝 好友申请变更: []
+2025-12-13T18:09:30.279343Z  INFO src/im/client.rs:372: [Client] ✅ 好友同步完成
