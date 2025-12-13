@@ -1,0 +1,1428 @@
+2025-12-13T15:18:04.770831Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:18:04.770856Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:18:04.770866Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:18:04.770875Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:18:04.770883Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:18:04.771110Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:18:04.771122Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:18:04.771130Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:18:04.771138Z DEBUG src/im/auth.rs:51:    OperationID: 4d4d5840-0041-4ca6-9ae6-59c3d95c3353
+2025-12-13T15:18:04.777017Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE1MDg0LCJpYXQiOjE3NjU2MzkwNzl9.NxJ6ddWiNOmmEDs9hoMznOoUOf3ct3t5ZhDWCS3dJYY","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNTA4NCwibmJmIjoxNzY1NjM5MDI0LCJpYXQiOjE3NjU2MzkwODR9.MmLB2JQ6J6IOpTAyCzFy-gS9eOWAhlllIAjp3cWTJKs","userID":"3217717393"}}
+2025-12-13T15:18:04.777107Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:18:04.777141Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:18:04.777182Z  INFO src/im/client.rs:210: [Client/WS] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:18:04.777977Z  INFO src/im/client.rs:216: [Client/WS] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:18:04.778007Z  INFO src/im/client.rs:229: [Client/WS] ✅ 服务器连接鉴权成功
+2025-12-13T15:18:04.778034Z  INFO src/im/client.rs:242: [Client/WS] 💓 启动心跳
+2025-12-13T15:18:04.778044Z  INFO src/im/client.rs:243: [Client/WS] 📥 开始监听服务器消息
+2025-12-13T15:18:04.778056Z  INFO src/im/conversation.rs:197: [ConvSync] 创建会话同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:18:04.778078Z  INFO src/bin/openim-cli.rs:173: [消息] 🔗 已连接: 连接成功
+2025-12-13T15:18:04.778885Z  INFO src/im/conversation.rs:222: [ConvSync/DB] 初始化数据库表结构
+2025-12-13T15:18:04.779188Z  INFO src/im/conversation.rs:274: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:18:04.779212Z  INFO src/im/friend.rs:123: [FriendSync/DB] 创建好友同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:18:04.779232Z  INFO src/im/client.rs:258: [Client/Conv] 🔄 启动会话增量同步任务
+2025-12-13T15:18:04.779341Z  INFO src/im/conversation.rs:1542: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:18:04.779665Z DEBUG src/im/conversation.rs:1548: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: b2816108-d883-441b-afb0-e64938a21b3a
+2025-12-13T15:18:04.779750Z  INFO src/im/friend.rs:149: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:18:04.780100Z  INFO src/im/friend.rs:173: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:18:04.780145Z  INFO src/im/client.rs:278: [Client/Friend] 🔄 启动好友增量同步任务
+2025-12-13T15:18:04.780196Z  INFO src/im/friend.rs:965: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:18:04.780212Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:18:04.780463Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:18:04.780469Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:18:04.780486Z DEBUG src/im/conversation.rs:1903: [ConvSync] 获取所有会话列表
+2025-12-13T15:18:04.780489Z  INFO src/im/conversation.rs:1559: [ConvSync] 本地会话数: 2
+2025-12-13T15:18:04.780499Z DEBUG src/im/conversation.rs:1861: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:18:04.780506Z  INFO src/im/conversation.rs:1646: [ConvSync] 使用增量同步，版本: 1, 版本ID: b2816108-d883-441b-afb0-e64938a21b3a
+2025-12-13T15:18:04.780517Z DEBUG src/im/friend.rs:970: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:18:04.780528Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:18:04.780583Z  INFO src/im/conversation.rs:1003: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: b2816108-d883-441b-afb0-e64938a21b3a
+   用户ID: 3217717393
+   操作ID: d2cfe93e-e8cd-422b-b6ba-5cef0bd2183f
+2025-12-13T15:18:04.780775Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:18:04.780936Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:18:04.780957Z DEBUG src/im/conversation.rs:1868: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:18:04.780971Z DEBUG src/im/friend.rs:221: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:18:04.780980Z DEBUG src/im/conversation.rs:1892: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:18:04.780995Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:18:04.781001Z  INFO src/im/friend.rs:402: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:18:04.781014Z DEBUG src/im/friend.rs:403: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:18:04.781028Z DEBUG src/im/friend.rs:404: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:18:04.781042Z DEBUG src/im/friend.rs:405: [FriendSync/HTTP]   操作ID: d8ac9bab-4420-4c80-8311-649a877a4838
+2025-12-13T15:18:04.781303Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:18:04.781328Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:18:04.781544Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:18:04.781560Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:18:04.781568Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:18:04.781578Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:18:04.782075Z DEBUG src/im/conversation.rs:1031: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.782147Z  INFO src/im/conversation.rs:1105: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:18:04.782164Z  INFO src/im/conversation.rs:1106: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:18:04.782177Z  INFO src/im/conversation.rs:1107: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:18:04.782191Z  INFO src/im/conversation.rs:1108: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:18:04.782205Z  INFO src/im/conversation.rs:1109: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:18:04.782222Z DEBUG src/im/conversation.rs:1115: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:18:04.782248Z  WARN src/im/conversation.rs:1672: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:18:04.782252Z DEBUG src/im/friend.rs:427: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.782263Z  INFO src/im/conversation.rs:1757: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:18:04.782305Z  INFO src/im/friend.rs:496: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:18:04.782322Z  INFO src/im/friend.rs:497: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:18:04.782335Z  INFO src/im/friend.rs:501: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:18:04.782363Z  INFO src/im/friend.rs:874: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:18:04.782394Z  INFO src/im/friend.rs:944: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:18:04.782510Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:18:04.782532Z DEBUG src/im/conversation.rs:1760: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:18:04.782544Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:18:04.782558Z DEBUG src/im/conversation.rs:1765: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:18:04.782581Z  INFO src/im/conversation.rs:1134: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:18:04.782594Z DEBUG src/im/conversation.rs:1135: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:18:04.782606Z DEBUG src/im/conversation.rs:1136: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:18:04.782619Z DEBUG src/im/conversation.rs:1137: [ConvSync/HTTP]   操作ID: ed181a9f-5205-47c1-93d7-c66c1eaf7527
+2025-12-13T15:18:04.782680Z  INFO src/im/friend.rs:1120: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:18:04.782696Z  INFO src/im/friend.rs:1126: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:18:04.782716Z  INFO src/im/friend.rs:721: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:18:04.782732Z DEBUG src/im/friend.rs:722: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:18:04.782747Z DEBUG src/im/friend.rs:723: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:18:04.782758Z DEBUG src/im/friend.rs:724: [FriendSync/HTTP]   操作ID: 18839182-5c02-49e0-ab93-207e21135921
+2025-12-13T15:18:04.783604Z DEBUG src/im/conversation.rs:1159: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.783709Z  INFO src/im/conversation.rs:1196: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:18:04.783722Z  INFO src/im/conversation.rs:1197: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:18:04.783738Z DEBUG src/im/conversation.rs:1198: [ConvSync/HTTP]   会话详情: ["si_1056224172_3217717393", "sg_3250046082"]
+2025-12-13T15:18:04.783762Z  INFO src/im/conversation.rs:1781: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:18:04.783782Z DEBUG src/im/conversation.rs:1793: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:18:04.783796Z DEBUG src/im/conversation.rs:1797: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:18:04.784060Z DEBUG src/im/friend.rs:746: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.784108Z  INFO src/im/friend.rs:778: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:18:04.784114Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:18:04.784130Z  INFO src/bin/openim-cli.rs:130: [好友] 🚫 黑名单变更: null
+2025-12-13T15:18:04.784132Z  INFO src/im/conversation.rs:1802: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:18:04.784155Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:18:04.784162Z  INFO src/im/friend.rs:802: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:18:04.784171Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:18:04.784173Z DEBUG src/im/friend.rs:803: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:18:04.784184Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:18:04.784188Z DEBUG src/im/friend.rs:804: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:18:04.784199Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: 89652f4b-e1ee-4e6b-835a-771c78562831
+2025-12-13T15:18:04.784203Z DEBUG src/im/friend.rs:805: [FriendSync/HTTP]   操作ID: 68393e26-efd6-471c-9cab-8aae5f9a6db3
+2025-12-13T15:18:04.785893Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.785975Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:18:04.786051Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:18:04.786095Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:18:04.786108Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:18:04.786126Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:18:04.786137Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:18:04.786150Z  INFO src/im/conversation.rs:1807: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:18:04.786161Z  INFO src/im/conversation.rs:1402: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:18:04.786181Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:18:04.786192Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:18:04.786204Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:18:04.786213Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:18:04.786229Z  INFO src/im/conversation.rs:1516: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:18:04.786243Z DEBUG src/im/conversation.rs:1822: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:18:04.786479Z DEBUG src/im/friend.rs:827: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.786543Z  INFO src/im/friend.rs:859: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:18:04.786568Z  INFO src/bin/openim-cli.rs:134: [好友] 📝 好友申请变更: []
+2025-12-13T15:18:04.786582Z  INFO src/im/client.rs:281: [Client/Friend] ✅ 好友同步完成
+2025-12-13T15:18:04.790612Z  INFO src/im/conversation.rs:1833: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: 4c959ddd-f626-453e-956e-2bfd5f4564ad
+2025-12-13T15:18:04.790631Z DEBUG src/im/conversation.rs:1838: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:18:04.790650Z DEBUG src/im/conversation.rs:1840: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:18:04.790670Z  INFO src/bin/openim-cli.rs:91: [会话] ✅ 同步完成: reinstalled=false
+2025-12-13T15:18:04.790688Z  INFO src/im/conversation.rs:829: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:18:04.790993Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:18:04.791027Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:18:04.791047Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:18:04.791063Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:18:04.791084Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: fa8364cf-4550-4955-acb2-2e4d876e2321
+2025-12-13T15:18:04.792278Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:18:04.792343Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:18:04.792383Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:18:04.792404Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:18:04.792418Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:18:04.792435Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:18:04.792448Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:18:04.792468Z  INFO src/im/conversation.rs:850: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:18:04.792483Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:18:04.792499Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:18:04.792511Z  INFO src/im/conversation.rs:885: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:18:04.792760Z  INFO src/im/conversation.rs:893: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:18:04.792776Z  INFO src/im/conversation.rs:977: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:18:04.792786Z  INFO src/im/conversation.rs:980: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:18:04.792799Z  INFO src/im/conversation.rs:1851: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:18:04.792814Z  INFO src/im/client.rs:261: [Client/Conv] ✅ 会话同步完成
+2025-12-13T15:24:43.134384Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:24:43.134410Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:24:43.134424Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:24:43.134435Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:24:43.134447Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:24:43.134748Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:24:43.134766Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:24:43.134779Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:24:43.134792Z DEBUG src/im/auth.rs:51:    OperationID: b78b2b11-0ef5-4742-a358-e73f5253ea3a
+2025-12-13T15:24:43.140389Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE1NDgzLCJpYXQiOjE3NjU2Mzk0Nzh9.4NWcPF62zLnfaYS-R1iSq7uFWlLfQ3ZctRtmx_qwn7s","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNTQ4MywibmJmIjoxNzY1NjM5NDIzLCJpYXQiOjE3NjU2Mzk0ODN9.9Z_g0OinCDWspgXehOMpTX87L2NDMjjmcffXo1Dz0CE","userID":"3217717393"}}
+2025-12-13T15:24:43.140480Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:24:43.140511Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:24:43.140549Z  INFO src/im/client.rs:210: [Client/WS] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:24:43.141327Z  INFO src/im/client.rs:216: [Client/WS] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:24:43.141364Z  INFO src/im/client.rs:229: [Client/WS] ✅ 服务器连接鉴权成功
+2025-12-13T15:24:43.141395Z  INFO src/im/client.rs:242: [Client/WS] 💓 启动心跳
+2025-12-13T15:24:43.141405Z  INFO src/im/client.rs:243: [Client/WS] 📥 开始监听服务器消息
+2025-12-13T15:24:43.141420Z  INFO src/im/conversation.rs:197: [ConvSync] 创建会话同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:24:43.141435Z  INFO src/bin/openim-cli.rs:173: [消息] 🔗 已连接: 连接成功
+2025-12-13T15:24:43.142274Z  INFO src/im/conversation.rs:222: [ConvSync/DB] 初始化数据库表结构
+2025-12-13T15:24:43.142579Z  INFO src/im/conversation.rs:274: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:24:43.142602Z  INFO src/im/friend.rs:123: [FriendSync/DB] 创建好友同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:24:43.142610Z  INFO src/im/client.rs:258: [Client/Conv] 🔄 启动会话增量同步任务
+2025-12-13T15:24:43.142658Z  INFO src/im/conversation.rs:1542: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:24:43.142937Z DEBUG src/im/conversation.rs:1548: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 4c959ddd-f626-453e-956e-2bfd5f4564ad
+2025-12-13T15:24:43.143046Z  INFO src/im/friend.rs:149: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:24:43.143330Z  INFO src/im/friend.rs:173: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:24:43.143366Z  INFO src/im/client.rs:278: [Client/Friend] 🔄 启动好友增量同步任务
+2025-12-13T15:24:43.143387Z  INFO src/im/friend.rs:965: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:24:43.143445Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:24:43.143593Z DEBUG src/im/friend.rs:970: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:24:43.143695Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:24:43.143723Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:24:43.143729Z DEBUG src/im/conversation.rs:1903: [ConvSync] 获取所有会话列表
+2025-12-13T15:24:43.143741Z  INFO src/im/conversation.rs:1559: [ConvSync] 本地会话数: 2
+2025-12-13T15:24:43.143747Z DEBUG src/im/conversation.rs:1861: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:24:43.143753Z  INFO src/im/conversation.rs:1646: [ConvSync] 使用增量同步，版本: 1, 版本ID: 4c959ddd-f626-453e-956e-2bfd5f4564ad
+2025-12-13T15:24:43.143766Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:24:43.143809Z  INFO src/im/conversation.rs:1003: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 4c959ddd-f626-453e-956e-2bfd5f4564ad
+   用户ID: 3217717393
+   操作ID: 70812c8c-8eb1-4067-846f-b530b6dec174
+2025-12-13T15:24:43.143922Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:24:43.144106Z DEBUG src/im/friend.rs:221: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:24:43.144130Z  INFO src/im/friend.rs:402: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:24:43.144142Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:24:43.144143Z DEBUG src/im/friend.rs:403: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:24:43.144161Z DEBUG src/im/friend.rs:404: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:24:43.144165Z DEBUG src/im/conversation.rs:1868: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:24:43.144171Z DEBUG src/im/friend.rs:405: [FriendSync/HTTP]   操作ID: 1b8b7fc0-7e2f-4dc3-af81-9eb83e0a1098
+2025-12-13T15:24:43.144177Z DEBUG src/im/conversation.rs:1892: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:24:43.144189Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:24:43.144379Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:24:43.144399Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:24:43.144603Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:24:43.144618Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:24:43.144627Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:24:43.144636Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:24:43.145218Z DEBUG src/im/conversation.rs:1031: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.145280Z  INFO src/im/conversation.rs:1105: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:24:43.145295Z  INFO src/im/conversation.rs:1106: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:24:43.145307Z  INFO src/im/conversation.rs:1107: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:24:43.145320Z  INFO src/im/conversation.rs:1108: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:24:43.145333Z  INFO src/im/conversation.rs:1109: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:24:43.145346Z DEBUG src/im/conversation.rs:1115: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:24:43.145370Z  WARN src/im/conversation.rs:1672: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:24:43.145384Z  INFO src/im/conversation.rs:1757: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:24:43.145416Z DEBUG src/im/friend.rs:427: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.145464Z  INFO src/im/friend.rs:496: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:24:43.145476Z  INFO src/im/friend.rs:497: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:24:43.145486Z  INFO src/im/friend.rs:501: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:24:43.145500Z  INFO src/im/friend.rs:874: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:24:43.145521Z  INFO src/im/friend.rs:944: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:24:43.145696Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:24:43.145713Z DEBUG src/im/conversation.rs:1760: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:24:43.145723Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:24:43.145733Z DEBUG src/im/conversation.rs:1765: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:24:43.145750Z  INFO src/im/conversation.rs:1134: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:24:43.145760Z DEBUG src/im/conversation.rs:1135: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:24:43.145770Z DEBUG src/im/conversation.rs:1136: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:24:43.145778Z DEBUG src/im/conversation.rs:1137: [ConvSync/HTTP]   操作ID: 440aedc4-a630-43fb-8815-dd4b3de956ed
+2025-12-13T15:24:43.145791Z  INFO src/im/friend.rs:1120: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:24:43.145811Z  INFO src/im/friend.rs:1126: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:24:43.145827Z  INFO src/im/friend.rs:721: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:24:43.145837Z DEBUG src/im/friend.rs:722: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:24:43.145847Z DEBUG src/im/friend.rs:723: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:24:43.145856Z DEBUG src/im/friend.rs:724: [FriendSync/HTTP]   操作ID: d9c3346e-97f0-41e5-9179-71fee59fe8ad
+2025-12-13T15:24:43.146789Z DEBUG src/im/conversation.rs:1159: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.146884Z  INFO src/im/conversation.rs:1196: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:24:43.146896Z  INFO src/im/conversation.rs:1197: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:24:43.146910Z DEBUG src/im/conversation.rs:1198: [ConvSync/HTTP]   会话详情: ["sg_3250046082", "si_1056224172_3217717393"]
+2025-12-13T15:24:43.146929Z  INFO src/im/conversation.rs:1781: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:24:43.146947Z DEBUG src/im/conversation.rs:1793: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:24:43.146956Z DEBUG src/im/conversation.rs:1797: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:24:43.147176Z DEBUG src/im/friend.rs:746: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.147198Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:24:43.147212Z  INFO src/im/conversation.rs:1802: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:24:43.147221Z  INFO src/im/friend.rs:778: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:24:43.147232Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:24:43.147239Z  INFO src/bin/openim-cli.rs:130: [好友] 🚫 黑名单变更: null
+2025-12-13T15:24:43.147246Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:24:43.147255Z  INFO src/im/friend.rs:802: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:24:43.147261Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:24:43.147269Z DEBUG src/im/friend.rs:803: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:24:43.147273Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: 115f985f-88e9-455e-aa80-2af8ae088483
+2025-12-13T15:24:43.147282Z DEBUG src/im/friend.rs:804: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:24:43.147296Z DEBUG src/im/friend.rs:805: [FriendSync/HTTP]   操作ID: 74b59f2c-2ad1-4b68-b500-5404b87a6b8f
+2025-12-13T15:24:43.148739Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.148799Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:24:43.148834Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:24:43.148850Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:24:43.148861Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:24:43.148878Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:24:43.148896Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:24:43.148909Z  INFO src/im/conversation.rs:1807: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:24:43.148926Z  INFO src/im/conversation.rs:1402: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:24:43.148973Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:24:43.148993Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:24:43.149006Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:24:43.149018Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:24:43.149040Z  INFO src/im/conversation.rs:1516: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:24:43.149057Z DEBUG src/im/conversation.rs:1822: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:24:43.149278Z DEBUG src/im/friend.rs:827: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.149331Z  INFO src/im/friend.rs:859: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:24:43.149352Z  INFO src/bin/openim-cli.rs:134: [好友] 📝 好友申请变更: []
+2025-12-13T15:24:43.149365Z  INFO src/im/client.rs:281: [Client/Friend] ✅ 好友同步完成
+2025-12-13T15:24:43.153060Z  INFO src/im/conversation.rs:1833: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: 6a030639-6a08-4f7c-a7e9-30d296395df3
+2025-12-13T15:24:43.153082Z DEBUG src/im/conversation.rs:1838: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:24:43.153103Z DEBUG src/im/conversation.rs:1840: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:24:43.153119Z  INFO src/bin/openim-cli.rs:91: [会话] ✅ 同步完成: reinstalled=false
+2025-12-13T15:24:43.153132Z  INFO src/im/conversation.rs:829: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:24:43.153399Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:24:43.153431Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:24:43.153446Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:24:43.153461Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:24:43.153475Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: 10581492-d084-4076-95b6-9d4b54ba6596
+2025-12-13T15:24:43.154643Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:24:43.154710Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:24:43.154757Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:24:43.154783Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:24:43.154794Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:24:43.154817Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:24:43.154828Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:24:43.154849Z  INFO src/im/conversation.rs:850: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:24:43.154864Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:24:43.154879Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:24:43.154892Z  INFO src/im/conversation.rs:885: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:24:43.155118Z  INFO src/im/conversation.rs:893: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:24:43.155135Z  INFO src/im/conversation.rs:977: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:24:43.155147Z  INFO src/im/conversation.rs:980: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:24:43.155160Z  INFO src/im/conversation.rs:1851: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:24:43.155177Z  INFO src/im/client.rs:261: [Client/Conv] ✅ 会话同步完成
+2025-12-13T15:30:10.800892Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:30:10.800916Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:30:10.800927Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:30:10.800943Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:30:10.800954Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:30:10.801194Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:30:10.801207Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:30:10.801216Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:30:10.801226Z DEBUG src/im/auth.rs:51:    OperationID: 6e4f9728-d630-46ab-afe1-d39a6813a986
+2025-12-13T15:30:10.806854Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE1ODEwLCJpYXQiOjE3NjU2Mzk4MDV9.I5LFC1meupfkdq1vp-A6ACVLj-0DGdIupZ54uaDTbck","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNTgxMCwibmJmIjoxNzY1NjM5NzUwLCJpYXQiOjE3NjU2Mzk4MTB9._fOMWyFSNPtLE0IFtbVWTu5kTVNND68Ybqb3c9WTjjw","userID":"3217717393"}}
+2025-12-13T15:30:10.806950Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:30:10.806980Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:30:10.807021Z  INFO src/im/client.rs:210: [Client/WS] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:30:10.807801Z  INFO src/im/client.rs:216: [Client/WS] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:30:10.807844Z  INFO src/im/client.rs:229: [Client/WS] ✅ 服务器连接鉴权成功
+2025-12-13T15:30:10.807883Z  INFO src/im/client.rs:242: [Client/WS] 💓 启动心跳
+2025-12-13T15:30:10.807895Z  INFO src/im/client.rs:243: [Client/WS] 📥 开始监听服务器消息
+2025-12-13T15:30:10.807912Z  INFO src/im/conversation.rs:197: [ConvSync] 创建会话同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:30:10.807934Z  INFO src/bin/openim-cli.rs:173: [消息] 🔗 已连接: 连接成功
+2025-12-13T15:30:10.808783Z  INFO src/im/conversation.rs:222: [ConvSync/DB] 初始化数据库表结构
+2025-12-13T15:30:10.809152Z  INFO src/im/conversation.rs:274: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:30:10.809186Z  INFO src/im/friend.rs:123: [FriendSync/DB] 创建好友同步器，用户ID: 3217717393, SQLite数据库: sqlite://conversations.db?mode=rwc
+2025-12-13T15:30:10.809200Z  INFO src/im/client.rs:258: [Client/Conv] 🔄 启动会话增量同步任务
+2025-12-13T15:30:10.809256Z  INFO src/im/conversation.rs:1542: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:30:10.809532Z DEBUG src/im/conversation.rs:1548: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 6a030639-6a08-4f7c-a7e9-30d296395df3
+2025-12-13T15:30:10.809641Z  INFO src/im/friend.rs:149: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:30:10.809930Z  INFO src/im/friend.rs:173: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:30:10.809972Z  INFO src/im/client.rs:278: [Client/Friend] 🔄 启动好友增量同步任务
+2025-12-13T15:30:10.809995Z  INFO src/im/friend.rs:965: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:30:10.810007Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:10.810196Z DEBUG src/im/friend.rs:970: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:30:10.810240Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:30:10.810255Z  INFO src/im/conversation.rs:1559: [ConvSync] 本地会话数: 2
+2025-12-13T15:30:10.810266Z  INFO src/im/conversation.rs:1646: [ConvSync] 使用增量同步，版本: 1, 版本ID: 6a030639-6a08-4f7c-a7e9-30d296395df3
+2025-12-13T15:30:10.810276Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:30:10.810313Z  INFO src/im/conversation.rs:1003: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 6a030639-6a08-4f7c-a7e9-30d296395df3
+   用户ID: 3217717393
+   操作ID: 2e689b0e-9501-4b1d-863d-26798d737bc5
+2025-12-13T15:30:10.810320Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:30:10.810343Z DEBUG src/im/conversation.rs:1903: [ConvSync] 获取所有会话列表
+2025-12-13T15:30:10.810359Z DEBUG src/im/conversation.rs:1861: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:30:10.810491Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:30:10.810652Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:10.810672Z DEBUG src/im/conversation.rs:1868: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:30:10.810685Z DEBUG src/im/conversation.rs:1892: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:30:10.810699Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:30:10.810738Z DEBUG src/im/friend.rs:221: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:30:10.810765Z  INFO src/im/friend.rs:402: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:30:10.810776Z DEBUG src/im/friend.rs:403: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:30:10.810788Z DEBUG src/im/friend.rs:404: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:10.810798Z DEBUG src/im/friend.rs:405: [FriendSync/HTTP]   操作ID: 84dc3723-464b-4fea-b2f0-0651a33d93c4
+2025-12-13T15:30:10.811058Z DEBUG src/im/friend.rs:202: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:30:10.811078Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:30:10.811340Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:30:10.811361Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:30:10.811373Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:30:10.811384Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:30:10.811746Z DEBUG src/im/conversation.rs:1031: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.811802Z  INFO src/im/conversation.rs:1105: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:30:10.811815Z  INFO src/im/conversation.rs:1106: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:30:10.811824Z  INFO src/im/conversation.rs:1107: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:30:10.811832Z  INFO src/im/conversation.rs:1108: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:30:10.811842Z  INFO src/im/conversation.rs:1109: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:30:10.811851Z DEBUG src/im/conversation.rs:1115: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:30:10.811870Z  WARN src/im/conversation.rs:1672: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:30:10.811880Z  INFO src/im/conversation.rs:1757: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:30:10.811922Z DEBUG src/im/friend.rs:427: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.811995Z  INFO src/im/friend.rs:496: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:30:10.812011Z  INFO src/im/friend.rs:497: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:30:10.812025Z  INFO src/im/friend.rs:501: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:30:10.812044Z  INFO src/im/friend.rs:874: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:30:10.812065Z  INFO src/im/friend.rs:944: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:30:10.812090Z DEBUG src/im/conversation.rs:334: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:30:10.812109Z DEBUG src/im/conversation.rs:1760: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:30:10.812120Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:30:10.812130Z DEBUG src/im/conversation.rs:1765: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:30:10.812148Z  INFO src/im/conversation.rs:1134: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:30:10.812158Z DEBUG src/im/conversation.rs:1135: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:30:10.812168Z DEBUG src/im/conversation.rs:1136: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:10.812176Z DEBUG src/im/conversation.rs:1137: [ConvSync/HTTP]   操作ID: c8bcc60d-5af1-4c51-9786-199e3022ff3f
+2025-12-13T15:30:10.812336Z  INFO src/im/friend.rs:1120: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:30:10.812354Z  INFO src/im/friend.rs:1126: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:30:10.812372Z  INFO src/im/friend.rs:721: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:30:10.812388Z DEBUG src/im/friend.rs:722: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:30:10.812402Z DEBUG src/im/friend.rs:723: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:10.812414Z DEBUG src/im/friend.rs:724: [FriendSync/HTTP]   操作ID: f979dfe1-86ea-4c92-9b28-f3dc3719d973
+2025-12-13T15:30:10.813036Z DEBUG src/im/conversation.rs:1159: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.813106Z  INFO src/im/conversation.rs:1196: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:30:10.813116Z  INFO src/im/conversation.rs:1197: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:30:10.813128Z DEBUG src/im/conversation.rs:1198: [ConvSync/HTTP]   会话详情: ["sg_3250046082", "si_1056224172_3217717393"]
+2025-12-13T15:30:10.813144Z  INFO src/im/conversation.rs:1781: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:30:10.813163Z DEBUG src/im/conversation.rs:1793: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:30:10.813182Z DEBUG src/im/conversation.rs:1797: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:30:10.813406Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:10.813422Z  INFO src/im/conversation.rs:1802: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:30:10.813436Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:30:10.813447Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:30:10.813451Z DEBUG src/im/friend.rs:746: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.813457Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:30:10.813468Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: 9340308b-b4fe-4732-ac5c-e69e1de14e62
+2025-12-13T15:30:10.813492Z  INFO src/im/friend.rs:778: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:30:10.813511Z  INFO src/bin/openim-cli.rs:130: [好友] 🚫 黑名单变更: null
+2025-12-13T15:30:10.813526Z  INFO src/im/friend.rs:802: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:30:10.813539Z DEBUG src/im/friend.rs:803: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:30:10.813549Z DEBUG src/im/friend.rs:804: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:10.813560Z DEBUG src/im/friend.rs:805: [FriendSync/HTTP]   操作ID: 24303146-b503-4a99-8eee-3aa8cb665347
+2025-12-13T15:30:10.814956Z DEBUG src/im/friend.rs:827: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.815028Z  INFO src/im/friend.rs:859: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:30:10.815052Z  INFO src/bin/openim-cli.rs:134: [好友] 📝 好友申请变更: []
+2025-12-13T15:30:10.815065Z  INFO src/im/client.rs:281: [Client/Friend] ✅ 好友同步完成
+2025-12-13T15:30:10.815215Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.815268Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:30:10.815313Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:30:10.815332Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:30:10.815347Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:10.815369Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:10.815384Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:30:10.815402Z  INFO src/im/conversation.rs:1807: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:30:10.815417Z  INFO src/im/conversation.rs:1402: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:30:10.815440Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:10.815456Z  INFO src/im/conversation.rs:1430: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:10.815477Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:30:10.815490Z DEBUG src/im/conversation.rs:1467: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:30:10.815511Z  INFO src/im/conversation.rs:1516: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:30:10.815527Z DEBUG src/im/conversation.rs:1822: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:30:10.819712Z  INFO src/im/conversation.rs:1833: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: c95313e6-2b25-4cfc-99b2-49d171e7eb38
+2025-12-13T15:30:10.819734Z DEBUG src/im/conversation.rs:1838: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:30:10.819754Z DEBUG src/im/conversation.rs:1840: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:30:10.819771Z  INFO src/bin/openim-cli.rs:91: [会话] ✅ 同步完成: reinstalled=false
+2025-12-13T15:30:10.819786Z  INFO src/im/conversation.rs:829: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:30:10.820073Z DEBUG src/im/conversation.rs:315: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:10.820104Z  INFO src/im/conversation.rs:694: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:30:10.820119Z DEBUG src/im/conversation.rs:695: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:30:10.820136Z DEBUG src/im/conversation.rs:696: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:30:10.820150Z DEBUG src/im/conversation.rs:697: [ConvSync/Seq]   操作ID: a1994e01-9eff-41bd-9e75-41ea57f45652
+2025-12-13T15:30:10.821253Z DEBUG src/im/conversation.rs:719: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:10.821318Z  INFO src/im/conversation.rs:726: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:30:10.821365Z  INFO src/im/conversation.rs:749: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:30:10.821385Z  INFO src/im/conversation.rs:758: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:30:10.821398Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:10.821415Z  INFO src/im/conversation.rs:770: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:10.821432Z  INFO src/im/conversation.rs:820: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:30:10.821451Z  INFO src/im/conversation.rs:850: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:30:10.821469Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:30:10.821487Z DEBUG src/im/conversation.rs:870: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:30:10.821504Z  INFO src/im/conversation.rs:885: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:30:10.821732Z  INFO src/im/conversation.rs:893: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:30:10.821749Z  INFO src/im/conversation.rs:977: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:30:10.821760Z  INFO src/im/conversation.rs:980: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:30:10.821782Z  INFO src/im/conversation.rs:1851: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:30:10.821800Z  INFO src/im/client.rs:261: [Client/Conv] ✅ 会话同步完成
+2025-12-13T15:30:32.302097Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:30:32.302118Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:30:32.302127Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:30:32.302135Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:30:32.302143Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:30:32.302390Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:30:32.302402Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:30:32.302410Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:30:32.302419Z DEBUG src/im/auth.rs:51:    OperationID: 6b98edf6-58c9-459f-a699-84097c57afd4
+2025-12-13T15:30:32.307336Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE1ODMyLCJpYXQiOjE3NjU2Mzk4Mjd9.SDc6WJXP7kCCveZ2yxWMKD6FCz0Sd9QCM5QRR-0bvzc","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNTgzMiwibmJmIjoxNzY1NjM5NzcyLCJpYXQiOjE3NjU2Mzk4MzJ9.J03g9DZuOV043_xqZuoBIYdr9uggIICd6chxHQAIQ0Q","userID":"3217717393"}}
+2025-12-13T15:30:32.307424Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:30:32.307456Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:30:32.307491Z  INFO src/im/client.rs:236: [Client/WS] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:30:32.308306Z  INFO src/im/client.rs:242: [Client/WS] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:30:32.308343Z  INFO src/im/client.rs:255: [Client/WS] ✅ 服务器连接鉴权成功
+2025-12-13T15:30:32.308374Z  INFO src/im/client.rs:268: [Client/WS] 💓 启动心跳
+2025-12-13T15:30:32.308386Z  INFO src/im/client.rs:269: [Client/WS] 📥 开始监听服务器消息
+2025-12-13T15:30:32.308397Z  INFO src/im/client.rs:272: [Client/DB] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T15:30:32.308431Z  INFO src/bin/openim-cli.rs:173: [消息] 🔗 已连接: 连接成功
+2025-12-13T15:30:32.309221Z  INFO src/im/client.rs:283: [Client/DB] 📋 初始化数据库表结构
+2025-12-13T15:30:32.309244Z  INFO src/im/conversation.rs:244: [ConvSync/DB] 初始化会话数据库表结构
+2025-12-13T15:30:32.309541Z  INFO src/im/conversation.rs:293: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:30:32.309559Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:30:32.309620Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:30:32.309634Z  INFO src/im/conversation.rs:226: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:30:32.309726Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:30:32.309741Z  INFO src/im/client.rs:300: [Client/Conv] 🔄 启动会话增量同步任务
+2025-12-13T15:30:32.309790Z  INFO src/im/client.rs:320: [Client/Friend] 🔄 启动好友增量同步任务
+2025-12-13T15:30:32.309796Z  INFO src/im/conversation.rs:1619: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:30:32.309844Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:30:32.310090Z DEBUG src/im/conversation.rs:1625: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: c95313e6-2b25-4cfc-99b2-49d171e7eb38
+2025-12-13T15:30:32.310130Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:30:32.310152Z DEBUG src/im/conversation.rs:1980: [ConvSync] 获取所有会话列表
+2025-12-13T15:30:32.310164Z DEBUG src/im/conversation.rs:1938: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:30:32.310273Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:30:32.310558Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:32.310745Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:32.310761Z DEBUG src/im/conversation.rs:1945: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:30:32.310771Z DEBUG src/im/conversation.rs:1969: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:30:32.310781Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:30:32.310945Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:30:32.311151Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:30:32.311168Z  INFO src/im/conversation.rs:1636: [ConvSync] 本地会话数: 2
+2025-12-13T15:30:32.311183Z  INFO src/im/conversation.rs:1723: [ConvSync] 使用增量同步，版本: 1, 版本ID: c95313e6-2b25-4cfc-99b2-49d171e7eb38
+2025-12-13T15:30:32.311197Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:30:32.311235Z  INFO src/im/conversation.rs:1080: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: c95313e6-2b25-4cfc-99b2-49d171e7eb38
+   用户ID: 3217717393
+   操作ID: 01faa4f6-fdb7-4865-b308-66eb13525ca4
+2025-12-13T15:30:32.311541Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:30:32.311562Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:30:32.311701Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:30:32.311728Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:30:32.311740Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:30:32.311750Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:32.311760Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: 263f8741-765e-4c77-b5de-a9d5628b0f01
+2025-12-13T15:30:32.312046Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:30:32.312067Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:30:32.312092Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:30:32.312129Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:30:32.312611Z DEBUG src/im/conversation.rs:1108: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.312671Z  INFO src/im/conversation.rs:1182: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:30:32.312683Z  INFO src/im/conversation.rs:1183: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:30:32.312696Z  INFO src/im/conversation.rs:1184: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:30:32.312707Z  INFO src/im/conversation.rs:1185: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:30:32.312719Z  INFO src/im/conversation.rs:1186: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:30:32.312732Z DEBUG src/im/conversation.rs:1192: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:30:32.312755Z  WARN src/im/conversation.rs:1749: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:30:32.312768Z  INFO src/im/conversation.rs:1834: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:30:32.312901Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.312964Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:30:32.312977Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:30:32.312991Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:30:32.313010Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:30:32.313032Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:30:32.313035Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:30:32.313060Z DEBUG src/im/conversation.rs:1837: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:30:32.313078Z  INFO src/bin/openim-cli.rs:87: [会话] 🔄 同步开始: reinstalled=false
+2025-12-13T15:30:32.313093Z DEBUG src/im/conversation.rs:1842: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:30:32.313128Z  INFO src/im/conversation.rs:1211: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:30:32.313145Z DEBUG src/im/conversation.rs:1212: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:30:32.313158Z DEBUG src/im/conversation.rs:1213: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:32.313173Z DEBUG src/im/conversation.rs:1214: [ConvSync/HTTP]   操作ID: c77346ab-9918-4bb3-8b17-9fd60b533b23
+2025-12-13T15:30:32.313538Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:30:32.313554Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:30:32.313573Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:30:32.313587Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:30:32.313597Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:32.313606Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 72e8defc-4766-4100-baf0-34d73412e4f2
+2025-12-13T15:30:32.314116Z DEBUG src/im/conversation.rs:1236: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.314197Z  INFO src/im/conversation.rs:1273: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:30:32.314209Z  INFO src/im/conversation.rs:1274: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:30:32.314225Z DEBUG src/im/conversation.rs:1275: [ConvSync/HTTP]   会话详情: ["sg_3250046082", "si_1056224172_3217717393"]
+2025-12-13T15:30:32.314244Z  INFO src/im/conversation.rs:1858: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:30:32.314260Z DEBUG src/im/conversation.rs:1870: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:30:32.314271Z DEBUG src/im/conversation.rs:1874: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:30:32.314506Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:32.314525Z  INFO src/im/conversation.rs:1879: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:30:32.314541Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:30:32.314554Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:30:32.314567Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:30:32.314579Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 43ccc83e-82e4-45ae-abc9-21228cb2fb86
+2025-12-13T15:30:32.314620Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.314673Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:30:32.314707Z  INFO src/bin/openim-cli.rs:130: [好友] 🚫 黑名单变更: null
+2025-12-13T15:30:32.314729Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:30:32.314746Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:30:32.314760Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:30:32.314775Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: c723a207-8da7-4e6d-bdd1-58d7a8276499
+2025-12-13T15:30:32.315465Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.315516Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:30:32.315550Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:30:32.315567Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:30:32.315578Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:32.315595Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:32.315606Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:30:32.315619Z  INFO src/im/conversation.rs:1884: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:30:32.315630Z  INFO src/im/conversation.rs:1479: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:30:32.315649Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:32.315660Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:32.315670Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:30:32.315679Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:30:32.315696Z  INFO src/im/conversation.rs:1593: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:30:32.315708Z DEBUG src/im/conversation.rs:1899: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:30:32.316264Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.316332Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:30:32.316353Z  INFO src/bin/openim-cli.rs:134: [好友] 📝 好友申请变更: []
+2025-12-13T15:30:32.316371Z  INFO src/im/client.rs:323: [Client/Friend] ✅ 好友同步完成
+2025-12-13T15:30:32.319258Z  INFO src/im/conversation.rs:1910: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: f7839215-7497-4583-9e17-ebef2989f96a
+2025-12-13T15:30:32.319277Z DEBUG src/im/conversation.rs:1915: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:30:32.319296Z DEBUG src/im/conversation.rs:1917: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:30:32.319315Z  INFO src/bin/openim-cli.rs:91: [会话] ✅ 同步完成: reinstalled=false
+2025-12-13T15:30:32.319333Z  INFO src/im/conversation.rs:906: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:30:32.319638Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:30:32.319671Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:30:32.319688Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:30:32.319705Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:30:32.319721Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 266b1454-abbb-4170-ac48-caa8bb519c08
+2025-12-13T15:30:32.320775Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:30:32.320833Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:30:32.320874Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:30:32.320894Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:30:32.320908Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:30:32.320932Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:30:32.320945Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:30:32.320967Z  INFO src/im/conversation.rs:927: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:30:32.320984Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:30:32.320998Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:30:32.321017Z  INFO src/im/conversation.rs:962: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:30:32.321258Z  INFO src/im/conversation.rs:970: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:30:32.321276Z  INFO src/im/conversation.rs:1054: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:30:32.321290Z  INFO src/im/conversation.rs:1057: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:30:32.321302Z  INFO src/im/conversation.rs:1928: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:30:32.321315Z  INFO src/im/client.rs:303: [Client/Conv] ✅ 会话同步完成
+2025-12-13T15:40:10.298016Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:40:10.298042Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:40:10.298051Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:40:10.298060Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:40:10.298072Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:40:10.298340Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:40:10.298355Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:40:10.298365Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:40:10.298378Z DEBUG src/im/auth.rs:51:    OperationID: 9d1a0ea0-564d-45cd-912e-ad2288ddc58a
+2025-12-13T15:40:10.304185Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE2NDEwLCJpYXQiOjE3NjU2NDA0MDV9.DT1tIxkPks9aEKzXHeGHskxkDsrKYNmJrlvfwR-KPmY","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNjQxMCwibmJmIjoxNzY1NjQwMzUwLCJpYXQiOjE3NjU2NDA0MTB9.FDd_KoDWtvgsvbeZzP8qNKXiRnn8JXjBx7p-GWfTg-o","userID":"3217717393"}}
+2025-12-13T15:40:10.304262Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:40:10.304295Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:40:10.304336Z  INFO src/im/client.rs:236: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:40:10.305088Z  INFO src/im/client.rs:242: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:40:10.305118Z  INFO src/im/client.rs:255: [Client] ✅ 服务器连接鉴权成功
+2025-12-13T15:40:10.305147Z  INFO src/im/client.rs:268: [Client] 💓 启动心跳
+2025-12-13T15:40:10.305162Z  INFO src/im/client.rs:269: [Client] 📥 开始监听服务器消息
+2025-12-13T15:40:10.305174Z  INFO src/im/client.rs:272: [Client] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T15:40:10.305189Z  INFO src/bin/openim-cli.rs:173: [CLI] 🔗 已连接: 连接成功
+2025-12-13T15:40:10.305926Z  INFO src/im/client.rs:283: [Client] 📋 初始化数据库表结构
+2025-12-13T15:40:10.305950Z  INFO src/im/conversation.rs:244: [ConvSync/DB] 初始化会话数据库表结构
+2025-12-13T15:40:10.306244Z  INFO src/im/conversation.rs:293: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:40:10.306263Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:40:10.306344Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:40:10.306359Z  INFO src/im/conversation.rs:226: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:40:10.306460Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:40:10.306474Z  INFO src/im/client.rs:300: [Client] 🔄 启动会话增量同步任务
+2025-12-13T15:40:10.306522Z  INFO src/im/conversation.rs:1619: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:40:10.306527Z  INFO src/im/client.rs:320: [Client] 🔄 启动好友增量同步任务
+2025-12-13T15:40:10.306572Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:40:10.306797Z DEBUG src/im/conversation.rs:1625: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: f7839215-7497-4583-9e17-ebef2989f96a
+2025-12-13T15:40:10.306878Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:40:10.306894Z DEBUG src/im/conversation.rs:1980: [ConvSync] 获取所有会话列表
+2025-12-13T15:40:10.306908Z DEBUG src/im/conversation.rs:1938: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:40:10.306997Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:40:10.307307Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:40:10.307511Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:40:10.307528Z DEBUG src/im/conversation.rs:1945: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:40:10.307541Z DEBUG src/im/conversation.rs:1969: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:40:10.307556Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:40:10.307676Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:40:10.307888Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:40:10.307908Z  INFO src/im/conversation.rs:1636: [ConvSync] 本地会话数: 2
+2025-12-13T15:40:10.307918Z  INFO src/im/conversation.rs:1723: [ConvSync] 使用增量同步，版本: 1, 版本ID: f7839215-7497-4583-9e17-ebef2989f96a
+2025-12-13T15:40:10.307937Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:40:10.307972Z  INFO src/im/conversation.rs:1080: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: f7839215-7497-4583-9e17-ebef2989f96a
+   用户ID: 3217717393
+   操作ID: f324af08-830d-431c-8437-243e15af9e4c
+2025-12-13T15:40:10.308277Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:40:10.308300Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:40:10.308429Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:40:10.308454Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:40:10.308469Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:40:10.308484Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:40:10.308498Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: e79cc7fc-d62a-43d4-acb6-650d29b395de
+2025-12-13T15:40:10.308770Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:40:10.308789Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:40:10.308798Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:40:10.308807Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:40:10.309428Z DEBUG src/im/conversation.rs:1108: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.309495Z  INFO src/im/conversation.rs:1182: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:40:10.309508Z  INFO src/im/conversation.rs:1183: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:40:10.309516Z  INFO src/im/conversation.rs:1184: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:40:10.309526Z  INFO src/im/conversation.rs:1185: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:40:10.309534Z  INFO src/im/conversation.rs:1186: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:40:10.309544Z DEBUG src/im/conversation.rs:1192: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:40:10.309563Z  WARN src/im/conversation.rs:1749: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:40:10.309574Z  INFO src/im/conversation.rs:1834: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:40:10.309610Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.309663Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:40:10.309675Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:40:10.309687Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:40:10.309708Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:40:10.309729Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:40:10.309782Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:40:10.309799Z DEBUG src/im/conversation.rs:1837: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:40:10.309809Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:40:10.309818Z DEBUG src/im/conversation.rs:1842: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:40:10.309846Z  INFO src/im/conversation.rs:1211: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:40:10.309856Z DEBUG src/im/conversation.rs:1212: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:40:10.309865Z DEBUG src/im/conversation.rs:1213: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:40:10.309875Z DEBUG src/im/conversation.rs:1214: [ConvSync/HTTP]   操作ID: 33439d52-b7bc-4550-860a-e2ff9b915024
+2025-12-13T15:40:10.310224Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:40:10.310241Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:40:10.310257Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:40:10.310268Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:40:10.310283Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:40:10.310293Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 3216b747-c304-419f-b2b1-3e5cfe89376d
+2025-12-13T15:40:10.310725Z DEBUG src/im/conversation.rs:1236: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.310809Z  INFO src/im/conversation.rs:1273: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:40:10.310820Z  INFO src/im/conversation.rs:1274: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:40:10.310832Z DEBUG src/im/conversation.rs:1275: [ConvSync/HTTP]   会话详情: ["sg_3250046082", "si_1056224172_3217717393"]
+2025-12-13T15:40:10.310848Z  INFO src/im/conversation.rs:1858: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:40:10.310862Z DEBUG src/im/conversation.rs:1870: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:40:10.310871Z DEBUG src/im/conversation.rs:1874: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:40:10.311114Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:40:10.311130Z  INFO src/im/conversation.rs:1879: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:40:10.311144Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:40:10.311155Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:40:10.311165Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:40:10.311174Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 42ac3d71-bcc8-4320-a395-4f23d648112f
+2025-12-13T15:40:10.311366Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.311409Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:40:10.311432Z  INFO src/bin/openim-cli.rs:130: [CLI] 🚫 黑名单变更: null
+2025-12-13T15:40:10.311453Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:40:10.311467Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:40:10.311482Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:40:10.311497Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: e09d0310-e8d1-4cc2-974c-2d1fdcd71752
+2025-12-13T15:40:10.312659Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.312733Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:40:10.312778Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:40:10.312805Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:40:10.312820Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:40:10.312842Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:40:10.312858Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:40:10.312876Z  INFO src/im/conversation.rs:1884: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:40:10.312891Z  INFO src/im/conversation.rs:1479: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:40:10.312920Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:40:10.312945Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:40:10.312960Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:40:10.312973Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:40:10.312994Z  INFO src/im/conversation.rs:1593: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:40:10.313012Z DEBUG src/im/conversation.rs:1899: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:40:10.313258Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.313314Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:40:10.313334Z  INFO src/bin/openim-cli.rs:134: [CLI] 📝 好友申请变更: []
+2025-12-13T15:40:10.313346Z  INFO src/im/client.rs:323: [Client] ✅ 好友同步完成
+2025-12-13T15:40:10.317224Z  INFO src/im/conversation.rs:1910: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: 66f80f56-ee7a-49e7-ba5b-f675219aeae9
+2025-12-13T15:40:10.317242Z DEBUG src/im/conversation.rs:1915: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:40:10.317256Z DEBUG src/im/conversation.rs:1917: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:40:10.317273Z  INFO src/bin/openim-cli.rs:91: [CLI] ✅ 同步完成: reinstalled=false
+2025-12-13T15:40:10.317289Z  INFO src/im/conversation.rs:906: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:40:10.317590Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:40:10.317616Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:40:10.317634Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:40:10.317649Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:40:10.317665Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 0b0d0c44-fc8a-4ead-b70a-17b1d0c092ff
+2025-12-13T15:40:10.318731Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:40:10.318797Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:40:10.318856Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:40:10.318878Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:40:10.318896Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:40:10.318919Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:40:10.318947Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:40:10.318970Z  INFO src/im/conversation.rs:927: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:40:10.318991Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:40:10.319012Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:40:10.319031Z  INFO src/im/conversation.rs:962: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:40:10.319250Z  INFO src/im/conversation.rs:970: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:40:10.319267Z  INFO src/im/conversation.rs:1054: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:40:10.319279Z  INFO src/im/conversation.rs:1057: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:40:10.319293Z  INFO src/im/conversation.rs:1928: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:40:10.319308Z  INFO src/im/client.rs:303: [Client] ✅ 会话同步完成
+2025-12-13T15:41:01.837248Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:41:01.837274Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:41:01.837283Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:41:01.837292Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:41:01.837301Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:41:01.837538Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:41:01.837552Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:41:01.837561Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:41:01.837570Z DEBUG src/im/auth.rs:51:    OperationID: 263c6971-9ecf-43ce-9e56-02c1ef3a61bf
+2025-12-13T15:41:01.842826Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE2NDYxLCJpYXQiOjE3NjU2NDA0NTZ9.rKrfxfnXHEqWhAWmCm6tHcRnUD2OmhnFXkxA0yuCUN4","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNjQ2MSwibmJmIjoxNzY1NjQwNDAxLCJpYXQiOjE3NjU2NDA0NjF9.UuVvxKvOECRQP2PPB17DTXN6wGlr5y9BKTDUJb-2MuE","userID":"3217717393"}}
+2025-12-13T15:41:01.842923Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:41:01.842967Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:41:01.843003Z  INFO src/im/client.rs:236: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:41:01.843775Z  INFO src/im/client.rs:242: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:41:01.843805Z  INFO src/im/client.rs:255: [Client] ✅ 服务器连接鉴权成功
+2025-12-13T15:41:01.843835Z  INFO src/im/client.rs:268: [Client] 💓 启动心跳
+2025-12-13T15:41:01.843844Z  INFO src/im/client.rs:269: [Client] 📥 开始监听服务器消息
+2025-12-13T15:41:01.843853Z  INFO src/im/client.rs:272: [Client] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T15:41:01.843888Z  INFO src/bin/openim-cli.rs:173: [CLI] 🔗 已连接: 连接成功
+2025-12-13T15:41:01.844688Z  INFO src/im/client.rs:283: [Client] 📋 初始化数据库表结构
+2025-12-13T15:41:01.844716Z  INFO src/im/conversation.rs:244: [ConvSync/DB] 初始化会话数据库表结构
+2025-12-13T15:41:01.845023Z  INFO src/im/conversation.rs:293: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:41:01.845046Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:41:01.845122Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:41:01.845139Z  INFO src/im/conversation.rs:226: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:41:01.845256Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:41:01.845265Z  INFO src/im/client.rs:300: [Client] 🔄 启动会话增量同步任务
+2025-12-13T15:41:01.845321Z  INFO src/im/conversation.rs:1619: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:41:01.845334Z  INFO src/im/client.rs:320: [Client] 🔄 启动好友增量同步任务
+2025-12-13T15:41:01.845376Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:41:01.845577Z DEBUG src/im/conversation.rs:1625: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 66f80f56-ee7a-49e7-ba5b-f675219aeae9
+2025-12-13T15:41:01.845660Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:41:01.845683Z DEBUG src/im/conversation.rs:1980: [ConvSync] 获取所有会话列表
+2025-12-13T15:41:01.845694Z DEBUG src/im/conversation.rs:1938: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:41:01.845757Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:41:01.846128Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:41:01.846351Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:41:01.846368Z DEBUG src/im/conversation.rs:1945: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:41:01.846381Z DEBUG src/im/conversation.rs:1969: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:41:01.846397Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:41:01.846507Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:41:01.846683Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:41:01.846697Z  INFO src/im/conversation.rs:1636: [ConvSync] 本地会话数: 2
+2025-12-13T15:41:01.846708Z  INFO src/im/conversation.rs:1723: [ConvSync] 使用增量同步，版本: 1, 版本ID: 66f80f56-ee7a-49e7-ba5b-f675219aeae9
+2025-12-13T15:41:01.846724Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:41:01.846738Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 10%
+2025-12-13T15:41:01.846774Z  INFO src/im/conversation.rs:1080: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 66f80f56-ee7a-49e7-ba5b-f675219aeae9
+   用户ID: 3217717393
+   操作ID: bdd0e6d8-9a99-4cb6-b003-951e5b18eb7a
+2025-12-13T15:41:01.847036Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:41:01.847053Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:41:01.847241Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:41:01.847281Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:41:01.847293Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:41:01.847303Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:41:01.847312Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: 31cac224-1fc1-4549-b1ef-425ea7551e82
+2025-12-13T15:41:01.847585Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:41:01.847603Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:41:01.847611Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:41:01.847622Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:41:01.848114Z DEBUG src/im/conversation.rs:1108: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.848180Z  INFO src/im/conversation.rs:1182: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:41:01.848195Z  INFO src/im/conversation.rs:1183: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:41:01.848208Z  INFO src/im/conversation.rs:1184: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:41:01.848220Z  INFO src/im/conversation.rs:1185: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:41:01.848231Z  INFO src/im/conversation.rs:1186: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:41:01.848241Z DEBUG src/im/conversation.rs:1192: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:41:01.848257Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 50%
+2025-12-13T15:41:01.848273Z  WARN src/im/conversation.rs:1749: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:41:01.848285Z  INFO src/im/conversation.rs:1834: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:41:01.848374Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.848419Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:41:01.848431Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:41:01.848441Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:41:01.848457Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:41:01.848478Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:41:01.848551Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:41:01.848569Z DEBUG src/im/conversation.rs:1837: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:41:01.848578Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:41:01.848588Z DEBUG src/im/conversation.rs:1842: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:41:01.848597Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 10%
+2025-12-13T15:41:01.848617Z  INFO src/im/conversation.rs:1211: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:41:01.848627Z DEBUG src/im/conversation.rs:1212: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:41:01.848637Z DEBUG src/im/conversation.rs:1213: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:41:01.848647Z DEBUG src/im/conversation.rs:1214: [ConvSync/HTTP]   操作ID: 5ec9ad43-f666-4761-b96f-092b4ca1458a
+2025-12-13T15:41:01.848987Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:41:01.849005Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:41:01.849022Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:41:01.849040Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:41:01.849051Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:41:01.849063Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 7529d0a3-a56f-4d0a-b34e-0c55be78e37b
+2025-12-13T15:41:01.849538Z DEBUG src/im/conversation.rs:1236: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.849618Z  INFO src/im/conversation.rs:1273: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:41:01.849632Z  INFO src/im/conversation.rs:1274: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:41:01.849646Z DEBUG src/im/conversation.rs:1275: [ConvSync/HTTP]   会话详情: ["si_1056224172_3217717393", "sg_3250046082"]
+2025-12-13T15:41:01.849664Z  INFO src/im/conversation.rs:1858: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:41:01.849675Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 30%
+2025-12-13T15:41:01.849688Z DEBUG src/im/conversation.rs:1870: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:41:01.849699Z DEBUG src/im/conversation.rs:1874: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:41:01.849709Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 50%
+2025-12-13T15:41:01.849941Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:41:01.849958Z  INFO src/im/conversation.rs:1879: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:41:01.849973Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:41:01.849983Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:41:01.849995Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:41:01.850008Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 53cedd4a-d096-4d15-806d-3dae223de9c5
+2025-12-13T15:41:01.850154Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.850190Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:41:01.850206Z  INFO src/bin/openim-cli.rs:130: [CLI] 🚫 黑名单变更: null
+2025-12-13T15:41:01.850220Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:41:01.850233Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:41:01.850245Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:41:01.850256Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: 587bcd4b-ad3e-4c60-8624-69637160deff
+2025-12-13T15:41:01.850925Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.850988Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:41:01.851031Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:41:01.851050Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:41:01.851063Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:41:01.851082Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:41:01.851107Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:41:01.851124Z  INFO src/im/conversation.rs:1884: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:41:01.851136Z  INFO src/im/conversation.rs:1479: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:41:01.851158Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:41:01.851204Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:41:01.851232Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:41:01.851241Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:41:01.851259Z  INFO src/im/conversation.rs:1593: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:41:01.851273Z DEBUG src/im/conversation.rs:1899: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:41:01.851284Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 80%
+2025-12-13T15:41:01.851605Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.851652Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:41:01.851670Z  INFO src/bin/openim-cli.rs:134: [CLI] 📝 好友申请变更: []
+2025-12-13T15:41:01.851679Z  INFO src/im/client.rs:323: [Client] ✅ 好友同步完成
+2025-12-13T15:41:01.855184Z  INFO src/im/conversation.rs:1910: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: 06f676cf-3f01-4b6d-98c6-fc249eeaded3
+2025-12-13T15:41:01.855202Z DEBUG src/im/conversation.rs:1915: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:41:01.855213Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 100%
+2025-12-13T15:41:01.855225Z DEBUG src/im/conversation.rs:1917: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:41:01.855237Z  INFO src/bin/openim-cli.rs:91: [CLI] ✅ 同步完成: reinstalled=false
+2025-12-13T15:41:01.855248Z  INFO src/im/conversation.rs:906: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:41:01.855546Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:41:01.855574Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:41:01.855587Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:41:01.855597Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:41:01.855608Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: b0c6fc16-372a-4198-9b0e-35c145206f16
+2025-12-13T15:41:01.856604Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:41:01.856666Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:41:01.856730Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:41:01.856760Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:41:01.856791Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:41:01.856817Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:41:01.856837Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:41:01.856903Z  INFO src/im/conversation.rs:927: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:41:01.856939Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:41:01.856955Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:41:01.856972Z  INFO src/im/conversation.rs:962: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:41:01.857228Z  INFO src/im/conversation.rs:970: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:41:01.857245Z  INFO src/im/conversation.rs:1054: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:41:01.857254Z  INFO src/im/conversation.rs:1057: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:41:01.857266Z  INFO src/im/conversation.rs:1928: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:41:01.857279Z  INFO src/im/client.rs:303: [Client] ✅ 会话同步完成
+2025-12-13T15:43:15.860800Z  INFO src/bin/openim-cli.rs:77: 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T15:43:15.860825Z  INFO src/bin/openim-cli.rs:193: 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T15:43:15.860835Z  INFO src/bin/openim-cli.rs:194: 📱 手机号: 17764338283
+2025-12-13T15:43:15.860844Z  INFO src/bin/openim-cli.rs:195: ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T15:43:15.860853Z  INFO src/bin/openim-cli.rs:198: 🔐 正在登录...
+2025-12-13T15:43:15.861118Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T15:43:15.861131Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T15:43:15.861140Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T15:43:15.861149Z DEBUG src/im/auth.rs:51:    OperationID: ceb598d4-e1c4-4193-b9c8-cc1743687081
+2025-12-13T15:43:15.866167Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDE2NTk1LCJpYXQiOjE3NjU2NDA1OTB9.9pVyhR0OyPHIWyQkqJXZdTMiiVZ6hvgr3LPYb3t0blI","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQxNjU5NSwibmJmIjoxNzY1NjQwNTM1LCJpYXQiOjE3NjU2NDA1OTV9.pkJTdqqMa3jANDMIGh2d1UzQyNiDsmkOfF4A6N3Ipik","userID":"3217717393"}}
+2025-12-13T15:43:15.866246Z  INFO src/bin/openim-cli.rs:213: ✅ 登录成功！用户ID: 3217717393
+2025-12-13T15:43:15.866278Z  INFO src/bin/openim-cli.rs:225: 🔗 正在连接服务器...
+2025-12-13T15:43:15.866319Z  INFO src/im/client.rs:236: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T15:43:15.867114Z  INFO src/im/client.rs:242: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T15:43:15.867147Z  INFO src/im/client.rs:255: [Client] ✅ 服务器连接鉴权成功
+2025-12-13T15:43:15.867174Z  INFO src/im/client.rs:268: [Client] 💓 启动心跳
+2025-12-13T15:43:15.867183Z  INFO src/im/client.rs:269: [Client] 📥 开始监听服务器消息
+2025-12-13T15:43:15.867192Z  INFO src/im/client.rs:272: [Client] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T15:43:15.867216Z  INFO src/bin/openim-cli.rs:173: [CLI] 🔗 已连接: 连接成功
+2025-12-13T15:43:15.867961Z  INFO src/im/client.rs:283: [Client] 📋 初始化数据库表结构
+2025-12-13T15:43:15.867985Z  INFO src/im/conversation.rs:244: [ConvSync/DB] 初始化会话数据库表结构
+2025-12-13T15:43:15.868295Z  INFO src/im/conversation.rs:293: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T15:43:15.868313Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T15:43:15.868398Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T15:43:15.868412Z  INFO src/im/conversation.rs:226: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:43:15.868501Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T15:43:15.868528Z  INFO src/im/client.rs:300: [Client] 🔄 启动会话增量同步任务
+2025-12-13T15:43:15.868567Z  INFO src/im/client.rs:320: [Client] 🔄 启动好友增量同步任务
+2025-12-13T15:43:15.868598Z  INFO src/im/conversation.rs:1619: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T15:43:15.868631Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T15:43:15.868891Z DEBUG src/im/conversation.rs:1625: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 06f676cf-3f01-4b6d-98c6-fc249eeaded3
+2025-12-13T15:43:15.868935Z  INFO src/bin/openim-cli.rs:233: ✅ 连接成功！
+2025-12-13T15:43:15.868951Z DEBUG src/im/conversation.rs:1980: [ConvSync] 获取所有会话列表
+2025-12-13T15:43:15.868961Z DEBUG src/im/conversation.rs:1938: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T15:43:15.869097Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:43:15.869391Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:43:15.869593Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:43:15.869610Z DEBUG src/im/conversation.rs:1945: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T15:43:15.869619Z DEBUG src/im/conversation.rs:1969: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T15:43:15.869629Z  INFO src/bin/openim-cli.rs:239: 📋 会话列表（共 0 个）:
+2025-12-13T15:43:15.869792Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:43:15.870018Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:43:15.870038Z  INFO src/im/conversation.rs:1636: [ConvSync] 本地会话数: 2
+2025-12-13T15:43:15.870049Z  INFO src/im/conversation.rs:1723: [ConvSync] 使用增量同步，版本: 1, 版本ID: 06f676cf-3f01-4b6d-98c6-fc249eeaded3
+2025-12-13T15:43:15.870061Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:43:15.870071Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 10%
+2025-12-13T15:43:15.870108Z  INFO src/im/conversation.rs:1080: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 06f676cf-3f01-4b6d-98c6-fc249eeaded3
+   用户ID: 3217717393
+   操作ID: d049e69f-e6ab-4abd-8e73-bdeb557e322b
+2025-12-13T15:43:15.870381Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T15:43:15.870398Z  INFO src/bin/openim-cli.rs:255: 👥 好友列表（共 1 个）
+2025-12-13T15:43:15.870543Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T15:43:15.870579Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T15:43:15.870595Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T15:43:15.870604Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:43:15.870613Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: f5154a1f-e332-447f-95d5-15d8b15eb020
+2025-12-13T15:43:15.870886Z  INFO src/bin/openim-cli.rs:259: 📬 总未读数: 37
+2025-12-13T15:43:15.870901Z  INFO src/bin/openim-cli.rs:263: 📥 开始监听消息...
+2025-12-13T15:43:15.870909Z  INFO src/bin/openim-cli.rs:264: 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T15:43:15.870919Z  INFO src/bin/openim-cli.rs:270: ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T15:43:15.871444Z DEBUG src/im/conversation.rs:1108: [ConvSync/HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.871508Z  INFO src/im/conversation.rs:1182: [ConvSync/HTTP] ✅ 增量会话同步响应
+2025-12-13T15:43:15.871521Z  INFO src/im/conversation.rs:1183: [ConvSync/HTTP]   全量同步: true
+2025-12-13T15:43:15.871531Z  INFO src/im/conversation.rs:1184: [ConvSync/HTTP]   版本ID: 68e1e4982a00312739a80eef
+2025-12-13T15:43:15.871541Z  INFO src/im/conversation.rs:1185: [ConvSync/HTTP]   版本: 3
+2025-12-13T15:43:15.871550Z  INFO src/im/conversation.rs:1186: [ConvSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:43:15.871560Z DEBUG src/im/conversation.rs:1192: [ConvSync/HTTP]   删除的会话ID: []
+2025-12-13T15:43:15.871575Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 50%
+2025-12-13T15:43:15.871588Z  WARN src/im/conversation.rs:1749: [ConvSync]   服务器要求全量同步...
+2025-12-13T15:43:15.871598Z  INFO src/im/conversation.rs:1834: [ConvSync] 🔄 开始全量同步会话...
+2025-12-13T15:43:15.871746Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.871798Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T15:43:15.871811Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T15:43:15.871821Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T15:43:15.871835Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T15:43:15.871852Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:43:15.871859Z DEBUG src/im/conversation.rs:411: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T15:43:15.871881Z DEBUG src/im/conversation.rs:1837: [ConvSync] full_sync -> on_sync_server_start(reinstalled=false)
+2025-12-13T15:43:15.871894Z  INFO src/bin/openim-cli.rs:87: [CLI] 🔄 同步开始: reinstalled=false
+2025-12-13T15:43:15.871906Z DEBUG src/im/conversation.rs:1842: [ConvSync] full_sync -> on_sync_server_progress(10)
+2025-12-13T15:43:15.871919Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 10%
+2025-12-13T15:43:15.871953Z  INFO src/im/conversation.rs:1211: [ConvSync/HTTP] 📡 请求全量会话同步
+2025-12-13T15:43:15.871966Z DEBUG src/im/conversation.rs:1212: [ConvSync/HTTP]   请求URL: http://localhost:10002/conversation/get_all_conversations
+2025-12-13T15:43:15.871977Z DEBUG src/im/conversation.rs:1213: [ConvSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:43:15.871991Z DEBUG src/im/conversation.rs:1214: [ConvSync/HTTP]   操作ID: b88732df-4c8f-46dd-8cc4-67b2206d720f
+2025-12-13T15:43:15.872334Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T15:43:15.872350Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T15:43:15.872367Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T15:43:15.872380Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T15:43:15.872394Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:43:15.872408Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 94c1de02-a46d-42e6-8f08-9ce48220bf03
+2025-12-13T15:43:15.872897Z DEBUG src/im/conversation.rs:1236: [ConvSync/HTTP] 全量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.872994Z  INFO src/im/conversation.rs:1273: [ConvSync/HTTP] ✅ 全量会话同步响应
+2025-12-13T15:43:15.873010Z  INFO src/im/conversation.rs:1274: [ConvSync/HTTP]   会话数: 2
+2025-12-13T15:43:15.873022Z DEBUG src/im/conversation.rs:1275: [ConvSync/HTTP]   会话详情: ["sg_3250046082", "si_1056224172_3217717393"]
+2025-12-13T15:43:15.873039Z  INFO src/im/conversation.rs:1858: [ConvSync] 从服务器获取到 2 个会话
+2025-12-13T15:43:15.873048Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 30%
+2025-12-13T15:43:15.873059Z DEBUG src/im/conversation.rs:1870: [ConvSync] 已转换 2 个会话为本地格式
+2025-12-13T15:43:15.873068Z DEBUG src/im/conversation.rs:1874: [ConvSync] full_sync -> on_sync_server_progress(50)
+2025-12-13T15:43:15.873076Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 50%
+2025-12-13T15:43:15.873292Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:43:15.873309Z  INFO src/im/conversation.rs:1879: [ConvSync] 本地已有 2 个会话
+2025-12-13T15:43:15.873323Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:43:15.873334Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:43:15.873345Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:43:15.873354Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 7a1e0784-7a56-4eb0-b837-af7fc4937671
+2025-12-13T15:43:15.873554Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.873591Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T15:43:15.873607Z  INFO src/bin/openim-cli.rs:130: [CLI] 🚫 黑名单变更: null
+2025-12-13T15:43:15.873620Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T15:43:15.873630Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T15:43:15.873639Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T15:43:15.873649Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: e47f0028-d81b-4eab-908c-02a4e22d4ae2
+2025-12-13T15:43:15.874211Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.874260Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:43:15.874307Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:43:15.874325Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:43:15.874337Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:43:15.874352Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:43:15.874363Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:43:15.874376Z  INFO src/im/conversation.rs:1884: [ConvSync] 获取到 2 个会话的 seqs 信息，用于设置未读数
+2025-12-13T15:43:15.874387Z  INFO src/im/conversation.rs:1479: [ConvSync] 开始同步会话，服务器会话数: 2, 本地会话数: 2
+2025-12-13T15:43:15.874407Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 si_1056224172_3217717393 根据 seqs 设置未读数: maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:43:15.874428Z  INFO src/im/conversation.rs:1507: [ConvSync]   会话 sg_3250046082 根据 seqs 设置未读数: maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:43:15.874440Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 sg_3250046082 无需更新
+2025-12-13T15:43:15.874450Z DEBUG src/im/conversation.rs:1544: [ConvSync]   会话 si_1056224172_3217717393 无需更新
+2025-12-13T15:43:15.874467Z  INFO src/im/conversation.rs:1593: [ConvSync] 会话同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T15:43:15.874483Z DEBUG src/im/conversation.rs:1899: [ConvSync] full_sync -> on_sync_server_progress(80)
+2025-12-13T15:43:15.874494Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 80%
+2025-12-13T15:43:15.875118Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.875182Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T15:43:15.875205Z  INFO src/bin/openim-cli.rs:134: [CLI] 📝 好友申请变更: []
+2025-12-13T15:43:15.875219Z  INFO src/im/client.rs:323: [Client] ✅ 好友同步完成
+2025-12-13T15:43:15.878729Z  INFO src/im/conversation.rs:1910: [ConvSync] 已更新版本信息 - 版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+2025-12-13T15:43:15.878751Z DEBUG src/im/conversation.rs:1915: [ConvSync] full_sync -> on_sync_server_progress(100)
+2025-12-13T15:43:15.878766Z  INFO src/bin/openim-cli.rs:95: [CLI] 📊 同步进度: 100%
+2025-12-13T15:43:15.878782Z DEBUG src/im/conversation.rs:1917: [ConvSync] full_sync -> on_sync_server_finish(reinstalled=false)
+2025-12-13T15:43:15.878799Z  INFO src/bin/openim-cli.rs:91: [CLI] ✅ 同步完成: reinstalled=false
+2025-12-13T15:43:15.878816Z  INFO src/im/conversation.rs:906: [ConvSync/Seq] 🔄 开始按 Seq 校正未读数...
+2025-12-13T15:43:15.879136Z DEBUG src/im/conversation.rs:392: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T15:43:15.879170Z  INFO src/im/conversation.rs:771: [ConvSync/Seq] 📡 请求会话 Seq 信息
+2025-12-13T15:43:15.879186Z DEBUG src/im/conversation.rs:772: [ConvSync/Seq]   请求URL: http://localhost:10002/msg/get_conversations_has_read_and_max_seq
+2025-12-13T15:43:15.879203Z DEBUG src/im/conversation.rs:773: [ConvSync/Seq]   用户ID: 3217717393
+2025-12-13T15:43:15.879218Z DEBUG src/im/conversation.rs:774: [ConvSync/Seq]   操作ID: 9c829f49-b9b4-4fff-93d2-e146a4891818
+2025-12-13T15:43:15.880313Z DEBUG src/im/conversation.rs:796: [ConvSync/Seq] 会话 Seq 请求成功，HTTP状态: 200 OK
+2025-12-13T15:43:15.880370Z  INFO src/im/conversation.rs:803: [ConvSync/Seq] 📥 服务器响应原始数据: {"errCode":0,"errMsg":"","errDlt":"","data":{"seqs":{"sg_3250046082":{"maxSeq":26,"hasReadSeq":13,"maxSeqTime":1765380998099},"si_1056224172_3217717393":{"maxSeq":43,"hasReadSeq":19,"maxSeqTime":1765637683035}},"pinnedConversationIDs":null}}
+2025-12-13T15:43:15.880411Z  INFO src/im/conversation.rs:826: [ConvSync/Seq] 📊 服务器返回的 data 字段: {
+  "pinnedConversationIDs": null,
+  "seqs": {
+    "sg_3250046082": {
+      "hasReadSeq": 13,
+      "maxSeq": 26,
+      "maxSeqTime": 1765380998099
+    },
+    "si_1056224172_3217717393": {
+      "hasReadSeq": 19,
+      "maxSeq": 43,
+      "maxSeqTime": 1765637683035
+    }
+  }
+}
+2025-12-13T15:43:15.880429Z  INFO src/im/conversation.rs:835: [ConvSync/Seq] 📋 解析会话 Seq 对象，条目数: 2
+2025-12-13T15:43:15.880441Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=sg_3250046082, maxSeq=26, hasReadSeq=13, unreadCount=13
+2025-12-13T15:43:15.880455Z  INFO src/im/conversation.rs:847: [ConvSync/Seq]   conversationID=si_1056224172_3217717393, maxSeq=43, hasReadSeq=19, unreadCount=24
+2025-12-13T15:43:15.880465Z  INFO src/im/conversation.rs:897: [ConvSync/Seq] ✅ 会话 Seq 解析完成，成功解析 2 个会话
+2025-12-13T15:43:15.880481Z  INFO src/im/conversation.rs:927: [ConvSync/Seq] 🔄 开始校正未读数，服务器返回 2 个会话的 Seq 信息
+2025-12-13T15:43:15.880499Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=sg_3250046082, unreadCount=13, maxSeq=26
+2025-12-13T15:43:15.880510Z DEBUG src/im/conversation.rs:947: [ConvSync/Seq] ✓ 会话未读数无需更新: conversationID=si_1056224172_3217717393, unreadCount=24, maxSeq=43
+2025-12-13T15:43:15.880528Z  INFO src/im/conversation.rs:962: [ConvSync/Seq] 📊 未读数校正统计: 已更新 0 个会话，发现 0 个本地缺失会话
+2025-12-13T15:43:15.880731Z  INFO src/im/conversation.rs:970: [ConvSync/Seq] 📊 校正前总未读数: 37
+2025-12-13T15:43:15.880745Z  INFO src/im/conversation.rs:1054: [ConvSync/Seq] ℹ️ 无会话变更，跳过回调
+2025-12-13T15:43:15.880754Z  INFO src/im/conversation.rs:1057: [ConvSync/Seq] ✅ 按 Seq 校正未读数完成
+2025-12-13T15:43:15.880764Z  INFO src/im/conversation.rs:1928: [ConvSync] ✅ 全量同步完成
+
+2025-12-13T15:43:15.880777Z  INFO src/im/client.rs:303: [Client] ✅ 会话同步完成
+2025-12-13T17:01:34.595963Z  INFO src/bin/openim-cli.rs:77: [CLI] 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T17:01:34.595988Z  INFO src/bin/openim-cli.rs:201: [CLI] 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T17:01:34.595999Z  INFO src/bin/openim-cli.rs:202: [CLI] 📱 手机号: 17764338283
+2025-12-13T17:01:34.596012Z  INFO src/bin/openim-cli.rs:203: [CLI] ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T17:01:34.596024Z  INFO src/bin/openim-cli.rs:206: [CLI] 🔐 正在登录...
+2025-12-13T17:01:34.596284Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T17:01:34.596299Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T17:01:34.596311Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T17:01:34.596323Z DEBUG src/im/auth.rs:51:    OperationID: 2a225c97-8b8c-4ee9-a0eb-e45c96d71a4f
+2025-12-13T17:01:34.604329Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDIxMjk0LCJpYXQiOjE3NjU2NDUyODl9.lyXiYNd5lK7cC2rf7HRCt7PkX0MBq_uXgZVcvHP_ZgE","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQyMTI5NCwibmJmIjoxNzY1NjQ1MjM0LCJpYXQiOjE3NjU2NDUyOTR9.ewNs701YRqQDfOXDE8HtAyQGu-XJAqNfm3ZN7JOK6ew","userID":"3217717393"}}
+2025-12-13T17:01:34.604425Z  INFO src/bin/openim-cli.rs:221: [CLI] ✅ 登录成功！用户ID: 3217717393
+2025-12-13T17:01:34.604460Z  INFO src/bin/openim-cli.rs:233: [CLI] 🔗 正在连接服务器...
+2025-12-13T17:01:34.604495Z  INFO src/im/client.rs:240: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T17:01:34.605753Z  INFO src/im/client.rs:246: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T17:02:25.044829Z  INFO src/bin/openim-cli.rs:77: [CLI] 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T17:02:25.044858Z  INFO src/bin/openim-cli.rs:201: [CLI] 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T17:02:25.044870Z  INFO src/bin/openim-cli.rs:202: [CLI] 📱 手机号: 17764338283
+2025-12-13T17:02:25.044882Z  INFO src/bin/openim-cli.rs:203: [CLI] ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T17:02:25.044894Z  INFO src/bin/openim-cli.rs:206: [CLI] 🔐 正在登录...
+2025-12-13T17:02:25.045157Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T17:02:25.045174Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T17:02:25.045186Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T17:02:25.045199Z DEBUG src/im/auth.rs:51:    OperationID: a4797724-3c76-471b-ad83-746e9eac8c3f
+2025-12-13T17:02:25.049971Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDIxMzQ1LCJpYXQiOjE3NjU2NDUzNDB9.n8Bfs1XOYVqpQ04L9imYs1IYLIuhRcs0c4eX3kpj_tI","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQyMTM0NSwibmJmIjoxNzY1NjQ1Mjg1LCJpYXQiOjE3NjU2NDUzNDV9.hfeXdlT_bwP8SFJJCqH4jKmIRYTgpH1rOz5Yn9RY99c","userID":"3217717393"}}
+2025-12-13T17:02:25.050078Z  INFO src/bin/openim-cli.rs:221: [CLI] ✅ 登录成功！用户ID: 3217717393
+2025-12-13T17:02:25.050110Z  INFO src/bin/openim-cli.rs:233: [CLI] 🔗 正在连接服务器...
+2025-12-13T17:02:25.050148Z  INFO src/im/client.rs:240: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T17:02:25.050933Z  INFO src/im/client.rs:246: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T17:04:49.825266Z  INFO src/bin/openim-cli.rs:77: [CLI] 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T17:04:49.825295Z  INFO src/bin/openim-cli.rs:201: [CLI] 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T17:04:49.825308Z  INFO src/bin/openim-cli.rs:202: [CLI] 📱 手机号: 17764338283
+2025-12-13T17:04:49.825321Z  INFO src/bin/openim-cli.rs:203: [CLI] ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T17:04:49.825333Z  INFO src/bin/openim-cli.rs:206: [CLI] 🔐 正在登录...
+2025-12-13T17:04:49.825587Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T17:04:49.825604Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T17:04:49.825617Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T17:04:49.825630Z DEBUG src/im/auth.rs:51:    OperationID: 9ae7a0ec-0cbb-4c2b-8356-340cc614f8d1
+2025-12-13T17:04:49.830849Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDIxNDg5LCJpYXQiOjE3NjU2NDU0ODR9.q3mGScxlhRCmlw8c20qsbElp85qbqUA6KE0ZfP7Ywo8","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQyMTQ4OSwibmJmIjoxNzY1NjQ1NDI5LCJpYXQiOjE3NjU2NDU0ODl9.A48fzqEyGuSdoOnEUHKLhIvQBoObUW1Ksvts6DA3rsg","userID":"3217717393"}}
+2025-12-13T17:04:49.830973Z  INFO src/bin/openim-cli.rs:221: [CLI] ✅ 登录成功！用户ID: 3217717393
+2025-12-13T17:04:49.831049Z  INFO src/bin/openim-cli.rs:233: [CLI] 🔗 正在连接服务器...
+2025-12-13T17:04:49.831089Z  INFO src/im/client.rs:240: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T17:04:49.831860Z  INFO src/im/client.rs:246: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T17:12:41.600474Z  INFO src/bin/openim-cli.rs:77: [CLI] 📝 日志已同时输出到控制台和文件: debug.log
+2025-12-13T17:12:41.600503Z  INFO src/bin/openim-cli.rs:201: [CLI] 🚀 OpenIM CLI 客户端（测试模式）
+2025-12-13T17:12:41.600515Z  INFO src/bin/openim-cli.rs:202: [CLI] 📱 手机号: 17764338283
+2025-12-13T17:12:41.600528Z  INFO src/bin/openim-cli.rs:203: [CLI] ⏱️  运行时长: 0 秒（0=持续运行）
+2025-12-13T17:12:41.600539Z  INFO src/bin/openim-cli.rs:206: [CLI] 🔐 正在登录...
+2025-12-13T17:12:41.600790Z  INFO src/im/auth.rs:48: 🔐 正在登录...
+2025-12-13T17:12:41.600807Z DEBUG src/im/auth.rs:49:    URL: http://localhost:10008/account/login
+2025-12-13T17:12:41.600819Z DEBUG src/im/auth.rs:50:    手机号: 17764338283
+2025-12-13T17:12:41.600832Z DEBUG src/im/auth.rs:51:    OperationID: 52d4b601-47f6-4e6b-8d88-71e20d7eea6b
+2025-12-13T17:12:41.606838Z DEBUG src/im/auth.rs:83: ✅ 登录响应: {"errCode":0,"errMsg":"","errDlt":"","data":{"imToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiUGxhdGZvcm1JRCI6NSwiZXhwIjoxNzczNDIxOTYxLCJpYXQiOjE3NjU2NDU5NTZ9.SuEYcdb9I1jhHEZY9ZnC18tr0tDYPphMEx2eGxGQwgQ","chatToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiIzMjE3NzE3MzkzIiwiVXNlclR5cGUiOjEsIlBsYXRmb3JtSUQiOjAsImV4cCI6MTc3MzQyMTk2MSwibmJmIjoxNzY1NjQ1OTAxLCJpYXQiOjE3NjU2NDU5NjF9.GwvLltshNVJwSiWfrzLjJLAM297pNmNXsSsvw94Zi90","userID":"3217717393"}}
+2025-12-13T17:12:41.606959Z  INFO src/bin/openim-cli.rs:221: [CLI] ✅ 登录成功！用户ID: 3217717393
+2025-12-13T17:12:41.607003Z  INFO src/bin/openim-cli.rs:233: [CLI] 🔗 正在连接服务器...
+2025-12-13T17:12:41.607048Z  INFO src/im/client.rs:240: [Client] 🔗 连接到 OpenIM Server (user=3217717393, platform=5)
+2025-12-13T17:12:41.607855Z  INFO src/im/client.rs:246: [Client] ✅ WebSocket 连接成功, 状态: 101 Switching Protocols
+2025-12-13T17:12:41.607889Z DEBUG src/im/client.rs:257: [Client] 📥 WebSocket 连接响应: {"errCode":0,"errMsg":"","errDlt":""}
+2025-12-13T17:12:41.607915Z  INFO src/im/client.rs:261: [Client] ✅ 服务器连接鉴权成功
+2025-12-13T17:12:41.607960Z  INFO src/im/client.rs:302: [Client] 💓 启动心跳
+2025-12-13T17:12:41.607973Z  INFO src/im/client.rs:303: [Client] 📥 开始监听服务器消息
+2025-12-13T17:12:41.607985Z  INFO src/im/client.rs:306: [Client] 🔗 创建共享数据库连接: sqlite://conversations.db?mode=rwc
+2025-12-13T17:12:41.608004Z  INFO src/bin/openim-cli.rs:181: [CLI/Message] 🔗 已连接: 连接成功
+2025-12-13T17:12:41.608750Z  INFO src/im/client.rs:319: [Client] 📋 初始化数据库表结构
+2025-12-13T17:12:41.608775Z  INFO src/im/conversation.rs:473: [ConvSync/DB] 初始化会话数据库表结构
+2025-12-13T17:12:41.609069Z  INFO src/im/conversation.rs:522: [ConvSync/DB] 数据库表初始化完成
+2025-12-13T17:12:41.609090Z  INFO src/im/friend.rs:171: [FriendSync/DB] 初始化好友表结构
+2025-12-13T17:12:41.609162Z  INFO src/im/friend.rs:194: [FriendSync/DB] 好友表初始化完成
+2025-12-13T17:12:41.609180Z  INFO src/im/conversation.rs:451: [ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T17:12:41.609276Z  INFO src/im/friend.rs:151: [FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: 3217717393
+2025-12-13T17:12:41.609289Z  INFO src/im/client.rs:341: [Client] 🔄 启动会话增量同步任务
+2025-12-13T17:12:41.609331Z  INFO src/im/conversation.rs:1373: [ConvSync] 🔄 开始增量同步会话...
+2025-12-13T17:12:41.609351Z  INFO src/im/client.rs:367: [Client] 🔄 启动好友增量同步任务
+2025-12-13T17:12:41.609397Z  INFO src/im/friend.rs:1018: [FriendSync] 🔄 开始增量同步好友...
+2025-12-13T17:12:41.609621Z DEBUG src/im/conversation.rs:1379: [ConvSync] 本地版本信息 - 版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+2025-12-13T17:12:41.609705Z  INFO src/bin/openim-cli.rs:241: [CLI] ✅ 连接成功！
+2025-12-13T17:12:41.609728Z DEBUG src/im/conversation.rs:1727: [ConvSync] 获取所有会话列表
+2025-12-13T17:12:41.609744Z DEBUG src/im/conversation.rs:1685: [ConvSync] 获取会话列表，偏移: 0, 数量: 18446744073709551615
+2025-12-13T17:12:41.609976Z DEBUG src/im/friend.rs:1023: [FriendSync] 本地好友版本信息 - 版本: 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T17:12:41.610355Z DEBUG src/im/conversation.rs:621: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T17:12:41.610577Z DEBUG src/im/conversation.rs:621: [ConvSync/DB] 获取本地会话列表，共 2 个会话
+2025-12-13T17:12:41.610595Z DEBUG src/im/conversation.rs:1692: [ConvSync] 过滤后会话数: 0 (过滤掉无消息时间的会话)
+2025-12-13T17:12:41.610604Z DEBUG src/im/conversation.rs:1716: [ConvSync] 返回 0 个会话 (范围: 0 - 0)
+2025-12-13T17:12:41.610615Z  INFO src/bin/openim-cli.rs:247: [CLI] 📋 会话列表（共 0 个）:
+2025-12-13T17:12:41.610757Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T17:12:41.610991Z DEBUG src/im/conversation.rs:640: [ConvSync/DB] 获取本地会话ID列表，共 2 个
+2025-12-13T17:12:41.611009Z  INFO src/im/conversation.rs:1390: [ConvSync] 本地会话数: 2
+2025-12-13T17:12:41.611023Z  INFO src/im/conversation.rs:1473: [ConvSync] 使用增量同步，版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+2025-12-13T17:12:41.611045Z  INFO src/bin/openim-cli.rs:87: [CLI/Conversation] 🔄 同步开始: reinstalled=false
+2025-12-13T17:12:41.611059Z  INFO src/bin/openim-cli.rs:101: [CLI/Conversation] 📊 同步进度: 10%
+2025-12-13T17:12:41.611087Z  INFO src/im/conversation.rs:182: [ConvSync/HTTP] 📡 请求增量会话同步
+   请求URL: http://localhost:10002/conversation/get_incremental_conversations
+   版本: 1, 版本ID: 21340a81-a3da-4308-8bd3-806f46e708ac
+   用户ID: 3217717393
+   操作ID: 368244c2-926a-4912-847f-60c8bfba8579
+2025-12-13T17:12:41.611400Z DEBUG src/im/friend.rs:255: [FriendSync/DB] 获取本地好友列表，共 1 个好友
+2025-12-13T17:12:41.611416Z  INFO src/bin/openim-cli.rs:263: [CLI] 👥 好友列表（共 1 个）
+2025-12-13T17:12:41.611505Z DEBUG src/im/friend.rs:274: [FriendSync/DB] 获取本地好友ID列表，共 1 个
+2025-12-13T17:12:41.611533Z  INFO src/im/friend.rs:455: [FriendSync/HTTP] 📡 请求增量好友同步
+2025-12-13T17:12:41.611545Z DEBUG src/im/friend.rs:456: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_incremental_friends
+2025-12-13T17:12:41.611558Z DEBUG src/im/friend.rs:457: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T17:12:41.611568Z DEBUG src/im/friend.rs:458: [FriendSync/HTTP]   操作ID: fa892cd5-5ef6-4ddc-8078-cd3b2ed6e6df
+2025-12-13T17:12:41.611837Z  INFO src/bin/openim-cli.rs:267: [CLI] 📬 总未读数: 37
+2025-12-13T17:12:41.611852Z  INFO src/bin/openim-cli.rs:271: [CLI] 📥 开始监听消息...
+2025-12-13T17:12:41.611864Z  INFO src/bin/openim-cli.rs:272: [CLI] 💡 提示：程序将持续运行并显示接收到的所有消息和事件
+2025-12-13T17:12:41.611876Z  INFO src/bin/openim-cli.rs:278: [CLI] ⏰ 持续运行中，按 Ctrl+C 退出
+2025-12-13T17:12:41.613435Z DEBUG src/im/types.rs:97: [HTTP] 增量会话同步请求成功，HTTP状态: 200 OK
+2025-12-13T17:12:41.613515Z ERROR src/im/conversation.rs:1490: [ConvSync] 增量同步失败: 反序列化响应失败
+2025-12-13T17:12:41.613532Z ERROR src/bin/openim-cli.rs:105: [CLI/Conversation] ❌ 同步失败: reinstalled=false
+2025-12-13T17:12:41.613548Z ERROR src/im/client.rs:345: [Client] ❌ 会话同步失败: 反序列化响应失败
+2025-12-13T17:12:41.613623Z DEBUG src/im/friend.rs:480: [FriendSync/HTTP] 增量好友同步请求成功，HTTP状态: 200 OK
+2025-12-13T17:12:41.613682Z  INFO src/im/friend.rs:549: [FriendSync/HTTP] ✅ 增量好友同步响应
+2025-12-13T17:12:41.613695Z  INFO src/im/friend.rs:550: [FriendSync/HTTP]   全量同步: false, 版本ID: 68e1e49803980d63e228abfa, 版本: 2
+2025-12-13T17:12:41.613708Z  INFO src/im/friend.rs:554: [FriendSync/HTTP]   新增: 0 个, 更新: 0 个, 删除: 0 个
+2025-12-13T17:12:41.613730Z  INFO src/im/friend.rs:927: [FriendSync] 开始同步好友，服务器好友数: 0, 本地好友数: 1
+2025-12-13T17:12:41.613753Z  INFO src/im/friend.rs:997: [FriendSync] 好友同步完成 - 新增: 0, 更新: 0, 删除: 0
+2025-12-13T17:12:41.614082Z  INFO src/im/friend.rs:1173: [FriendSync] 已更新好友版本信息 - 版本: 2 -> 2, 版本ID: 68e1e49803980d63e228abfa
+2025-12-13T17:12:41.614097Z  INFO src/im/friend.rs:1179: [FriendSync] ✅ 增量同步好友完成
+2025-12-13T17:12:41.614120Z  INFO src/im/friend.rs:774: [FriendSync/HTTP] 📡 请求黑名单列表
+2025-12-13T17:12:41.614134Z DEBUG src/im/friend.rs:775: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_black_list
+2025-12-13T17:12:41.614147Z DEBUG src/im/friend.rs:776: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T17:12:41.614162Z DEBUG src/im/friend.rs:777: [FriendSync/HTTP]   操作ID: 48adc5ff-e42b-4841-a358-3f9bf80417d7
+2025-12-13T17:12:41.615244Z DEBUG src/im/friend.rs:799: [FriendSync/HTTP] 黑名单列表请求成功，HTTP状态: 200 OK
+2025-12-13T17:12:41.615290Z  INFO src/im/friend.rs:831: [FriendSync/HTTP] ✅ 黑名单列表响应，条目数: 0
+2025-12-13T17:12:41.615310Z  INFO src/bin/openim-cli.rs:138: [CLI/Friend] 🚫 黑名单变更: null
+2025-12-13T17:12:41.615328Z  INFO src/im/friend.rs:855: [FriendSync/HTTP] 📡 请求好友申请列表
+2025-12-13T17:12:41.615348Z DEBUG src/im/friend.rs:856: [FriendSync/HTTP]   请求URL: http://localhost:10002/friend/get_friend_apply_list
+2025-12-13T17:12:41.615360Z DEBUG src/im/friend.rs:857: [FriendSync/HTTP]   用户ID: 3217717393
+2025-12-13T17:12:41.615374Z DEBUG src/im/friend.rs:858: [FriendSync/HTTP]   操作ID: a8725044-46f1-48c8-a022-f82a23d5847c
+2025-12-13T17:12:41.617193Z DEBUG src/im/friend.rs:880: [FriendSync/HTTP] 好友申请列表请求成功，HTTP状态: 200 OK
+2025-12-13T17:12:41.617268Z  INFO src/im/friend.rs:912: [FriendSync/HTTP] ✅ 好友申请列表响应，条目数: 0
+2025-12-13T17:12:41.617293Z  INFO src/bin/openim-cli.rs:142: [CLI/Friend] 📝 好友申请变更: []
+2025-12-13T17:12:41.617308Z  INFO src/im/client.rs:370: [Client] ✅ 好友同步完成

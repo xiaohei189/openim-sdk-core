@@ -13,7 +13,10 @@ pub mod types;
 pub use auth::login_async;
 
 // 重新导出会话同步相关类型和函数
-pub use conversation::{
-    ConversationSyncer, ConversationSyncerConfig, LocalConversation, LocalVersionSync,
-};
+pub use conversation::{ConversationSyncer, ConversationSyncerConfig, LocalVersionSync};
 
+// 重新导出类型相关结构体和函数
+pub use types::{
+    handle_http_response, AllConversationsResp, ApiResponse, IncrementalConversationResp,
+    LocalConversation, WebSocketConnectResp,
+};

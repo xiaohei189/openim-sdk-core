@@ -142,6 +142,59 @@ impl FriendSyncer {
         Ok(syncer)
     }
 
+    /// 创建新的好友同步器（使用共享数据库连接）
+    pub async fn with_listener_and_db(
+        config: FriendSyncerConfig,
+        listener: Arc<dyn FriendListener>,
+        db: Arc<DatabaseConnection>,
+    ) -> Result<Self> {
+        info!(
+            "[FriendSync/DB] 创建好友同步器（使用共享数据库连接），用户ID: {}",
+            config.user_id
+        );
+
+        let syncer = Self {
+            client: reqwest::Client::new(),
+            db: (*db).clone(),
+            config,
+            listener,
+        };
+
+        // 注意：数据库表初始化已在 client 中完成，这里不需要再次初始化
+        Ok(syncer)
+    }
+
+    /// 使用共享数据库连接初始化数据库表结构（静态方法）
+    pub async fn init_db_with_connection(db: &DatabaseConnection) -> Result<()> {
+        use sea_orm::ConnectionTrait;
+
+        info!("[FriendSync/DB] 初始化好友表结构");
+
+        let sql = r#"
+            CREATE TABLE IF NOT EXISTS local_friends (
+                owner_user_id TEXT NOT NULL,
+                friend_user_id TEXT NOT NULL,
+                remark TEXT NOT NULL DEFAULT '',
+                create_time INTEGER NOT NULL DEFAULT 0,
+                add_source INTEGER NOT NULL DEFAULT 0,
+                operator_user_id TEXT NOT NULL DEFAULT '',
+                nickname TEXT NOT NULL DEFAULT '',
+                face_url TEXT NOT NULL DEFAULT '',
+                ex TEXT NOT NULL DEFAULT '',
+                attached_info TEXT NOT NULL DEFAULT '',
+                is_pinned INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY (owner_user_id, friend_user_id)
+            )
+        "#;
+
+        db.execute_unprepared(sql)
+            .await
+            .context("创建好友表失败")?;
+
+        info!("[FriendSync/DB] 好友表初始化完成");
+        Ok(())
+    }
+
     /// 初始化好友表结构
     async fn init_db(&self) -> Result<()> {
         use sea_orm::ConnectionTrait;
