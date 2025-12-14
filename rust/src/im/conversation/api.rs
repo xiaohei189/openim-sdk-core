@@ -15,17 +15,17 @@ pub struct ConversationApi {
     client: reqwest::Client,
     api_base_url: String,
     user_id: String,
-    token: String,
 }
 
 impl ConversationApi {
     /// 创建新的会话 API 客户端
-    pub fn new(api_base_url: String, user_id: String, token: String) -> Self {
+    ///
+    /// `client` 应该已经在外部配置好认证拦截器
+    pub fn new(client: reqwest::Client, api_base_url: String, user_id: String) -> Self {
         Self {
-            client: reqwest::Client::new(),
+            client,
             api_base_url,
             user_id,
-            token,
         }
     }
 
@@ -49,7 +49,6 @@ impl ConversationApi {
             .post(&url)
             .header("Content-Type", "application/json")
             .header("operationID", &operation_id)
-            .header("token", &self.token)
             .json(&serde_json::json!({
                 "userID": self.user_id,
             }))
@@ -176,7 +175,6 @@ impl ConversationApi {
             .post(&url)
             .header("Content-Type", "application/json")
             .header("operationID", &operation_id)
-            .header("token", &self.token)
             .json(&serde_json::json!({
                 "userID": self.user_id,
                 "version": version,
@@ -185,7 +183,6 @@ impl ConversationApi {
             .send()
             .await
             .context("请求失败")?;
-
 
         // 直接反序列化为业务逻辑层结构体
         let api_resp =
@@ -214,7 +211,6 @@ impl ConversationApi {
             .post(&url)
             .header("Content-Type", "application/json")
             .header("operationID", &operation_id)
-            .header("token", &self.token)
             .json(&serde_json::json!({
                 "ownerUserID": self.user_id
             }))
@@ -260,7 +256,6 @@ impl ConversationApi {
             .post(&url)
             .header("Content-Type", "application/json")
             .header("operationID", &operation_id)
-            .header("token", &self.token)
             .json(&serde_json::json!({
                 "userID": self.user_id
             }))

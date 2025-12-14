@@ -53,11 +53,25 @@ impl ConversationSyncer {
             .await
             .context(format!("连接SQLite数据库失败: {}", db_url))?;
 
+        // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
+        let http_client = reqwest::ClientBuilder::new()
+            .default_headers({
+                let mut headers = reqwest::header::HeaderMap::new();
+                headers.insert(
+                    reqwest::header::HeaderName::from_static("token"),
+                    reqwest::header::HeaderValue::from_str(&config.token)
+                        .context("无效的 token")?,
+                );
+                headers
+            })
+            .build()
+            .context("创建 HTTP 客户端失败")?;
+
         // 初始化数据库表
         let api = ConversationApi::new(
+            http_client,
             config.api_base_url.clone(),
             config.user_id.clone(),
-            config.token.clone(),
         );
         let conversation_dao = ConversationDao::new(db.clone());
         let version_sync_dao = VersionSyncDao::new(db.clone(), config.user_id.clone());
@@ -79,17 +93,46 @@ impl ConversationSyncer {
         listener: Arc<dyn ConversationListener>,
         db: Arc<DatabaseConnection>,
     ) -> Result<Self> {
+        // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
+        let http_client = reqwest::ClientBuilder::new()
+            .default_headers({
+                let mut headers = reqwest::header::HeaderMap::new();
+                headers.insert(
+                    reqwest::header::HeaderName::from_static("token"),
+                    reqwest::header::HeaderValue::from_str(&config.token)
+                        .context("无效的 token")?,
+                );
+                headers
+            })
+            .build()
+            .context("创建 HTTP 客户端失败")?;
+
+        Self::with_listener_and_db_and_client(config, listener, db, http_client).await
+    }
+
+    /// 创建新的会话同步器（使用共享数据库连接和 HTTP 客户端）
+    pub async fn with_listener_and_db_and_client(
+        config: ConversationSyncerConfig,
+        listener: Arc<dyn ConversationListener>,
+        db: Arc<DatabaseConnection>,
+        http_client: reqwest::Client,
+    ) -> Result<Self> {
         info!(
             "[ConvSync] 创建会话同步器（使用共享数据库连接），用户ID: {}",
             config.user_id
         );
 
+        // 创建带 base_url 的客户端（通过 URL 前缀实现）
+        // 注意：reqwest 不支持动态 base_url，所以我们仍然需要在 API 方法中使用完整 URL
+        // 但认证信息已经通过 default_headers 设置好了
+        let api = ConversationApi::new(
+            http_client,
+            config.api_base_url.clone(),
+            config.user_id.clone(),
+        );
+
         let syncer = Self {
-            api: ConversationApi::new(
-                config.api_base_url.clone(),
-                config.user_id.clone(),
-                config.token.clone(),
-            ),
+            api,
             conversation_dao: ConversationDao::new((*db).clone()),
             version_sync_dao: VersionSyncDao::new((*db).clone(), config.user_id.clone()),
             listener,
