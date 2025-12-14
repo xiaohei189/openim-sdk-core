@@ -2,16 +2,18 @@
 //!
 //! 此模块包含 OpenIM 客户端的核心逻辑实现。
 
-use crate::im::advanced_msg_listener::{AdvancedMsgListener, EmptyAdvancedMsgListener};
 use crate::im::conversation::{
     listener::{ConversationListener, EmptyConversationListener},
     models::ConversationSyncerConfig,
     service::ConversationSyncer,
 };
-use crate::im::friend::{FriendListener, FriendSyncer, FriendSyncerConfig, LocalFriend};
-use crate::im::message_store::MessageStore;
-use crate::im::msg::{
-    AtElem, CustomElem, FileElem, LocationElem, MarkdownTextElem, MsgStruct, PictureElem,
+use crate::im::friend::{
+    EmptyFriendListener, FriendListener, FriendSyncer, FriendSyncerConfig, LocalFriend,
+};
+use crate::im::message::dao::MessageStore;
+use crate::im::message::listener::{AdvancedMsgListener, EmptyAdvancedMsgListener};
+use crate::im::message::types::{
+    AtElem, AtInfo, CustomElem, FileElem, LocationElem, MarkdownTextElem, MsgStruct, PictureElem,
     QuoteElem, SoundElem, VideoElem,
 };
 use crate::im::serialization::{compress_gzip, decompress_gzip, generate_msg_id};
@@ -206,7 +208,7 @@ impl OpenIMClient {
             conversation_syncer: None,
             friend_syncer: None,
             conversation_listener: Arc::new(EmptyConversationListener),
-            friend_listener: Arc::new(crate::im::friend::EmptyFriendListener),
+            friend_listener: Arc::new(EmptyFriendListener),
             advanced_msg_listener: Arc::new(EmptyAdvancedMsgListener),
             message_store: None,
             db: None,
@@ -320,7 +322,7 @@ impl OpenIMClient {
         // 初始化数据库表结构（会话表和好友表）
         info!("[Client] 📋 初始化数据库表结构");
         ConversationSyncer::init_db_with_connection(&db).await?;
-        crate::im::friend::FriendSyncer::init_db_with_connection(&db).await?;
+        FriendSyncer::init_db_with_connection(&db).await?;
 
         // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
         let http_client = reqwest::ClientBuilder::new()
@@ -1808,7 +1810,7 @@ impl OpenIMClient {
         &self,
         text: String,
         at_user_list: Vec<String>,
-        at_users_info: Option<Vec<crate::im::msg::AtInfo>>,
+        at_users_info: Option<Vec<AtInfo>>,
         quote_message: Option<MsgStruct>,
         is_at_self: bool,
     ) -> MsgStruct {
@@ -1871,7 +1873,7 @@ impl OpenIMClient {
         content: String,
         message_entity_list: Option<String>,
     ) -> MsgStruct {
-        let elem = crate::im::msg::MarkdownEntityElem {
+        let elem = crate::im::message::types::MarkdownEntityElem {
             content,
             message_entity_list,
         };
@@ -1945,7 +1947,7 @@ impl OpenIMClient {
         &self,
         markdown_text: String,
         at_user_list: Vec<String>,
-        at_users_info: Option<Vec<crate::im::msg::AtInfo>>,
+        at_users_info: Option<Vec<AtInfo>>,
         quote_message: Option<MsgStruct>,
         is_at_self: bool,
     ) -> MsgStruct {
@@ -2106,7 +2108,7 @@ impl OpenIMClient {
             .as_ref()
             .ok_or_else(|| anyhow::anyhow!("消息存储未初始化"))?;
         let now = chrono::Utc::now().timestamp_millis();
-        let log = crate::im::message_store::LocalChatLog {
+        let log = crate::im::message::models::LocalChatLog {
             conversation_id,
             client_msg_id: msg
                 .client_msg_id
@@ -2345,10 +2347,10 @@ mod tests {
     use tracing::{error, info, warn};
 
     use super::{ClientConfig, OpenIMClient};
-    use crate::im::advanced_msg_listener::AdvancedMsgListener;
     use crate::im::auth::login_async;
     use crate::im::conversation::ConversationListener;
     use crate::im::friend::FriendListener;
+    use crate::im::message::listener::AdvancedMsgListener;
     use std::sync::{Arc, Once};
 
     static INIT_LOGGER: Once = Once::new();

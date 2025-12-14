@@ -1,3 +1,8 @@
+//! 消息数据访问层（DAO）
+//!
+//! 负责所有消息相关的数据库操作，将数据访问逻辑与业务逻辑分离
+
+use crate::im::message::models::LocalChatLog;
 use anyhow::Result;
 use chrono::Utc;
 use sqlx::{sqlite::SqlitePoolOptions, Pool, Row, Sqlite};
@@ -10,31 +15,6 @@ pub struct MessageStore {
     pool: Pool<Sqlite>,
     /// 当前登录用户，用于过滤自发消息的已读逻辑
     pub login_user_id: String,
-}
-
-#[derive(Debug, Clone)]
-pub struct LocalChatLog {
-    pub conversation_id: String,
-    pub client_msg_id: String,
-    pub server_msg_id: String,
-    pub send_id: String,
-    pub recv_id: String,
-    pub sender_platform_id: i32,
-    pub sender_nickname: String,
-    pub sender_face_url: String,
-    pub session_type: i32,
-    pub msg_from: i32,
-    pub content_type: i32,
-    pub content: String,
-    pub is_read: bool,
-    pub status: i32,
-    pub seq: i64,
-    pub send_time: i64,
-    pub create_time: i64,
-    pub attached_info: String,
-    pub ex: String,
-    pub local_ex: String,
-    pub group_id: String,
 }
 
 impl MessageStore {

@@ -2,7 +2,7 @@
 //!
 //! 负责所有会话相关的数据库操作，将数据访问逻辑与业务逻辑分离
 
-use crate::im::entities::local_conversations;
+use crate::im::conversation::entities::local_conversations;
 use crate::im::types::LocalConversation;
 use anyhow::{Context, Result};
 use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
@@ -196,7 +196,7 @@ impl ConversationDao {
         &self,
         conversation_id: &str,
     ) -> Result<Option<LocalConversation>> {
-        use crate::im::entities::local_conversations::{Column, Entity};
+        use crate::im::conversation::entities::local_conversations::{Column, Entity};
         use sea_orm::QueryFilter;
 
         let model = Entity::find()
@@ -235,7 +235,7 @@ impl ConversationDao {
 
     /// 插入或更新会话到数据库
     pub async fn upsert_conversation(&self, conv: &LocalConversation) -> Result<()> {
-        use crate::im::entities::local_conversations::ActiveModel;
+        use crate::im::conversation::entities::local_conversations::ActiveModel;
 
         let active_model = ActiveModel {
             conversation_id: Set(conv.conversation_id.clone()),
@@ -338,8 +338,10 @@ impl VersionSyncDao {
     }
 
     /// 从数据库获取版本同步信息
-    pub async fn get_version_sync(&self) -> Result<Option<crate::im::conversation::models::LocalVersionSync>> {
-        use crate::im::entities::local_version_sync::{Column, Entity};
+    pub async fn get_version_sync(
+        &self,
+    ) -> Result<Option<crate::im::conversation::models::LocalVersionSync>> {
+        use crate::im::conversation::entities::local_version_sync::{Column, Entity};
 
         let model = Entity::find()
             .filter(Column::TableName.eq("local_conversations"))
@@ -363,7 +365,7 @@ impl VersionSyncDao {
         &self,
         version_sync: &crate::im::conversation::models::LocalVersionSync,
     ) -> Result<()> {
-        use crate::im::entities::local_version_sync::{ActiveModel, Column, Entity};
+        use crate::im::conversation::entities::local_version_sync::{ActiveModel, Column, Entity};
         use sea_orm::Set;
 
         let active_model = ActiveModel {
@@ -385,4 +387,3 @@ impl VersionSyncDao {
         Ok(())
     }
 }
-

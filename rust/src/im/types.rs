@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use tracing::{debug, error};
 
 /// WebSocket 消息类型标识符
 pub mod msg_type {
@@ -72,60 +71,6 @@ pub struct ApiResponse<T> {
     #[serde(rename = "errMsg")]
     pub err_msg: String,
     pub data: Option<T>,
-}
-
-/// 通用 HTTP 响应处理函数：直接反序列化为统一的响应结构体
-/// 返回 `ApiResponse<T>`，调用方可以根据需要处理 `data` 字段（可能为 None）
-/// 所有 API 都可以共用此方法
-pub async fn handle_http_response<T: serde::de::DeserializeOwned>(
-    response: reqwest::Response,
-    operation_name: &str,
-) -> anyhow::Result<ApiResponse<T>> {
-    use anyhow::Context;
-    use tracing::{debug, error, info};
-
-    let status = response.status();
-
-
-    // 读取 body bytes（只能读取一次）
-    let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
-    // 打印 body 内容
-    let body_str = String::from_utf8_lossy(&body_bytes);
-    info!("[HTTP] {}响应 Body: {}", operation_name, body_str);
-
-    if !status.is_success() {
-        error!(
-            "[HTTP] {}请求失败，HTTP状态: {}, 响应: {}",
-            operation_name, status, body_str
-        );
-        return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
-    }
-    debug!("[HTTP] {}请求成功，HTTP状态: {}", operation_name, status);
-
-    // 从 bytes 反序列化（因为 body 已经被消费了）
-    let api_resp: ApiResponse<T> = serde_json::from_slice(&body_bytes).map_err(|e| {
-        error!(
-            "[HTTP] {}反序列化失败: {:?}\n原始响应: {}",
-            operation_name, e, body_str
-        );
-        anyhow::anyhow!("反序列化响应失败: {:?}", e)
-    })?;
-
-    // 检查错误码
-    if api_resp.err_code != 0 {
-        error!(
-            "[HTTP] {}服务器错误，错误码: {}, 错误信息: {}",
-            operation_name, api_resp.err_code, api_resp.err_msg
-        );
-        return Err(anyhow::anyhow!(
-            "服务器错误 {}: {}",
-            api_resp.err_code,
-            api_resp.err_msg
-        ));
-    }
-
-    // 直接返回 ApiResponse，调用方可以根据需要处理 data 字段
-    Ok(api_resp)
 }
 
 // ========== 会话相关结构体 ==========

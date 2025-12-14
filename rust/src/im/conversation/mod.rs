@@ -4,6 +4,7 @@
 
 pub mod api;
 pub mod dao;
+pub mod entities;
 pub mod listener;
 pub mod models;
 pub mod service;

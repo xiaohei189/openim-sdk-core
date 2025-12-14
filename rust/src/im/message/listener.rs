@@ -1,6 +1,4 @@
-//! 高级消息监听器（参考 Go 版本的 OnAdvancedMsgListener）
-//!
-//! 此模块定义了消息相关的回调接口，与 Go 版本的 `OnAdvancedMsgListener` 对应。
+//! 消息监听器回调接口
 
 use async_trait::async_trait;
 
