@@ -1,11 +1,8 @@
-pub mod advanced_msg_listener;
 pub mod auth;
 pub mod client;
 pub mod conversation;
-pub mod entities;
 pub mod friend;
-pub mod message_store;
-pub mod msg;
+pub mod message;
 pub mod serialization;
 pub mod types;
 
@@ -15,8 +12,18 @@ pub use auth::login_async;
 // 重新导出会话同步相关类型和函数
 pub use conversation::{ConversationSyncer, ConversationSyncerConfig, LocalVersionSync};
 
+// 重新导出好友相关类型和函数
+pub use friend::{FriendSyncer, FriendSyncerConfig, LocalFriend};
+
+// 重新导出消息相关类型和函数
+pub use message::{
+    AdvancedMsgListener, AtElem, AtInfo, CustomElem, EmptyAdvancedMsgListener, FileElem,
+    LocalChatLog, LocationElem, MarkdownEntityElem, MarkdownTextElem, MessageStore, MsgStruct,
+    PictureBaseInfo, PictureElem, QuoteElem, SoundElem, VideoElem,
+};
+
 // 重新导出类型相关结构体和函数
 pub use types::{
-    handle_http_response, AllConversationsResp, ApiResponse, IncrementalConversationResp,
-    LocalConversation, WebSocketConnectResp,
+    AllConversationsResp, ApiResponse, IncrementalConversationResp, LocalConversation,
+    WebSocketConnectResp,
 };

@@ -178,11 +178,9 @@ impl ConversationSyncer {
         // 文本消息：尽量展示正文
         if msg.content_type == constant::TEXT {
             if let Ok(s) = String::from_utf8(msg.content.clone()) {
-                if let Ok(json) = serde_json::from_str::<serde_json::Value>(&s) {
-                    if let Some(text) = json.get("content").and_then(|v| v.as_str()) {
-                        if !text.is_empty() {
-                            return text.to_string();
-                        }
+                if let Ok(text_elem) = serde_json::from_str::<crate::im::message::types::TextElem>(&s) {
+                    if !text_elem.content.is_empty() {
+                        return text_elem.content;
                     }
                 }
                 if !s.is_empty() {

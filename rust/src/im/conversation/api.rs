@@ -3,11 +3,11 @@
 //! 负责所有会话相关的 HTTP 请求
 
 use crate::im::conversation::types::{AllConversationsResp, IncrementalConversationResp};
-use crate::im::types::handle_http_response;
+use crate::im::types::ApiResponse;
 use anyhow::{Context, Result};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use tracing::{debug, error, info, warn};
+use tracing::{debug, error, info};
 use uuid::Uuid;
 
 /// 会话相关的 HTTP API 客户端
@@ -67,82 +67,78 @@ impl ConversationApi {
         }
         debug!("[ConvAPI/Seq] 会话 Seq 请求成功，HTTP状态: {}", status);
 
-        let text = response.text().await.context("读取响应失败")?;
-        let json_value: serde_json::Value =
-            serde_json::from_str(&text).context("解析 JSON 失败")?;
-
-        // 输出原始响应数据（用于调试）
-        info!("[ConvAPI/Seq] 📥 服务器响应原始数据: {}", text);
-
-        // 检查错误码
-        if let Some(err_code) = json_value.get("errCode").and_then(|v| v.as_i64()) {
-            if err_code != 0 {
-                let err_msg = json_value
-                    .get("errMsg")
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("未知错误");
-                error!(
-                    "[ConvAPI/Seq] 会话 Seq 服务器错误，错误码: {}, 错误信息: {}",
-                    err_code, err_msg
-                );
-                return Err(anyhow::anyhow!("服务器错误 {}: {}", err_code, err_msg));
-            }
+        #[derive(Deserialize, Serialize)]
+        struct SeqInfo {
+            #[serde(rename = "maxSeq")]
+            max_seq: i64,
+            #[serde(rename = "hasReadSeq")]
+            has_read_seq: i64,
+            #[serde(rename = "maxSeqTime", default)]
+            max_seq_time: i64,
         }
 
-        let data = json_value
-            .get("data")
+        #[derive(Deserialize)]
+        struct SeqsData {
+            seqs: HashMap<String, SeqInfo>,
+        }
+
+        let status = response.status();
+        let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
+        let body_str = String::from_utf8_lossy(&body_bytes);
+        info!("[ConvAPI/Seq] 📥 服务器响应原始数据: {}", body_str);
+
+        if !status.is_success() {
+            error!(
+                "[ConvAPI/Seq] 会话 Seq 请求失败，HTTP状态: {}, 响应: {}",
+                status, body_str
+            );
+            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
+        }
+
+        let api_resp: ApiResponse<SeqsData> = serde_json::from_slice(&body_bytes).map_err(|e| {
+            error!(
+                "[ConvAPI/Seq] 会话 Seq 反序列化失败: {:?}\n原始响应: {}",
+                e, body_str
+            );
+            anyhow::anyhow!("反序列化响应失败: {:?}", e)
+        })?;
+
+        if api_resp.err_code != 0 {
+            error!(
+                "[ConvAPI/Seq] 会话 Seq 服务器错误，错误码: {}, 错误信息: {}",
+                api_resp.err_code, api_resp.err_msg
+            );
+            return Err(anyhow::anyhow!(
+                "服务器错误 {}: {}",
+                api_resp.err_code,
+                api_resp.err_msg
+            ));
+        }
+
+        let data = api_resp
+            .data
             .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
 
         // 输出 data 字段内容（用于调试）
-        if let Ok(data_str) = serde_json::to_string_pretty(data) {
-            info!("[ConvAPI/Seq] 📊 服务器返回的 data 字段: {}", data_str);
+        if let Ok(data_str) = serde_json::to_string_pretty(&data.seqs) {
+            info!("[ConvAPI/Seq] 📊 服务器返回的 data.seqs 字段: {}", data_str);
         }
 
-        // 期望结构：data.seqs: { conversationID: { maxSeq, hasReadSeq, maxSeqTime }, ... }
         let mut result = HashMap::new();
+        info!(
+            "[ConvAPI/Seq] 📋 解析会话 Seq 对象，条目数: {}",
+            data.seqs.len()
+        );
 
-        // 先尝试作为对象（HashMap）解析
-        if let Some(seqs_obj) = data.get("seqs").and_then(|v| v.as_object()) {
+        for (conv_id, seq_info) in data.seqs.iter() {
+            let max_seq = seq_info.max_seq;
+            let has_read_seq = seq_info.has_read_seq;
+            let unread = (max_seq - has_read_seq).max(0);
             info!(
-                "[ConvAPI/Seq] 📋 解析会话 Seq 对象，条目数: {}",
-                seqs_obj.len()
+                "[ConvAPI/Seq]   conversationID={}, maxSeq={}, hasReadSeq={}, unreadCount={}",
+                conv_id, max_seq, has_read_seq, unread
             );
-            for (conv_id, seq_data) in seqs_obj.iter() {
-                if let Some(seq_obj) = seq_data.as_object() {
-                    let max_seq = seq_obj.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                    let has_read_seq = seq_obj
-                        .get("hasReadSeq")
-                        .and_then(|v| v.as_i64())
-                        .unwrap_or(0);
-                    let unread = (max_seq - has_read_seq).max(0);
-                    info!(
-                        "[ConvAPI/Seq]   conversationID={}, maxSeq={}, hasReadSeq={}, unreadCount={}",
-                        conv_id, max_seq, has_read_seq, unread
-                    );
-                    result.insert(conv_id.clone(), (max_seq, has_read_seq));
-                } else {
-                    warn!("[ConvAPI/Seq]   跳过无效条目（seq 数据不是对象）: conversationID={}, data={:?}", conv_id, seq_data);
-                }
-            }
-        }
-        // 兼容旧格式：数组格式（虽然服务器不返回，但保留兼容性）
-        else if let Some(arr) = data.get("seqs").and_then(|v| v.as_array()) {
-            warn!(
-                "[ConvAPI/Seq] ⚠️ 收到数组格式的 seqs（旧格式），条目数: {}",
-                arr.len()
-            );
-            for item in arr {
-                if let Some(obj) = item.as_object() {
-                    if let Some(conv_id) = obj.get("conversationID").and_then(|v| v.as_str()) {
-                        let max_seq = obj.get("maxSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                        let has_read_seq =
-                            obj.get("hasReadSeq").and_then(|v| v.as_i64()).unwrap_or(0);
-                        result.insert(conv_id.to_string(), (max_seq, has_read_seq));
-                    }
-                }
-            }
-        } else {
-            warn!("[ConvAPI/Seq] ⚠️ data.seqs 字段不存在或格式不正确");
+            result.insert(conv_id.clone(), (max_seq, has_read_seq));
         }
 
         info!(
@@ -184,9 +180,40 @@ impl ConversationApi {
             .await
             .context("请求失败")?;
 
-        // 直接反序列化为业务逻辑层结构体
-        let api_resp =
-            handle_http_response::<IncrementalConversationResp>(response, "增量会话同步").await?;
+        let status = response.status();
+        let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
+        let body_str = String::from_utf8_lossy(&body_bytes);
+        info!("[ConvAPI] 增量会话同步响应 Body: {}", body_str);
+
+        if !status.is_success() {
+            error!(
+                "[ConvAPI] 增量会话同步请求失败，HTTP状态: {}, 响应: {}",
+                status, body_str
+            );
+            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
+        }
+
+        let api_resp: ApiResponse<IncrementalConversationResp> =
+            serde_json::from_slice(&body_bytes).map_err(|e| {
+                error!(
+                    "[ConvAPI] 增量会话同步反序列化失败: {:?}\n原始响应: {}",
+                    e, body_str
+                );
+                anyhow::anyhow!("反序列化响应失败: {:?}", e)
+            })?;
+
+        if api_resp.err_code != 0 {
+            error!(
+                "[ConvAPI] 增量会话同步服务器错误，错误码: {}, 错误信息: {}",
+                api_resp.err_code, api_resp.err_msg
+            );
+            return Err(anyhow::anyhow!(
+                "服务器错误 {}: {}",
+                api_resp.err_code,
+                api_resp.err_msg
+            ));
+        }
+
         let resp = api_resp
             .data
             .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
@@ -218,9 +245,40 @@ impl ConversationApi {
             .await
             .context("请求失败")?;
 
-        // 直接反序列化为业务逻辑层结构体
-        let api_resp =
-            handle_http_response::<AllConversationsResp>(response, "全量会话同步").await?;
+        let status = response.status();
+        let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
+        let body_str = String::from_utf8_lossy(&body_bytes);
+        info!("[ConvAPI] 全量会话同步响应 Body: {}", body_str);
+
+        if !status.is_success() {
+            error!(
+                "[ConvAPI] 全量会话同步请求失败，HTTP状态: {}, 响应: {}",
+                status, body_str
+            );
+            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
+        }
+
+        let api_resp: ApiResponse<AllConversationsResp> = serde_json::from_slice(&body_bytes)
+            .map_err(|e| {
+                error!(
+                    "[ConvAPI] 全量会话同步反序列化失败: {:?}\n原始响应: {}",
+                    e, body_str
+                );
+                anyhow::anyhow!("反序列化响应失败: {:?}", e)
+            })?;
+
+        if api_resp.err_code != 0 {
+            error!(
+                "[ConvAPI] 全量会话同步服务器错误，错误码: {}, 错误信息: {}",
+                api_resp.err_code, api_resp.err_msg
+            );
+            return Err(anyhow::anyhow!(
+                "服务器错误 {}: {}",
+                api_resp.err_code,
+                api_resp.err_msg
+            ));
+        }
+
         let resp = api_resp
             .data
             .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;
@@ -263,14 +321,46 @@ impl ConversationApi {
             .await
             .context("请求失败")?;
 
-        // 使用通用响应处理
         #[derive(Deserialize)]
         struct ConversationIdsData {
             #[serde(rename = "conversationIDs")]
             conversation_ids: Vec<String>,
         }
 
-        let api_resp = handle_http_response::<ConversationIdsData>(response, "会话ID列表").await?;
+        let status = response.status();
+        let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
+        let body_str = String::from_utf8_lossy(&body_bytes);
+        info!("[ConvAPI] 会话ID列表响应 Body: {}", body_str);
+
+        if !status.is_success() {
+            error!(
+                "[ConvAPI] 会话ID列表请求失败，HTTP状态: {}, 响应: {}",
+                status, body_str
+            );
+            return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
+        }
+
+        let api_resp: ApiResponse<ConversationIdsData> = serde_json::from_slice(&body_bytes)
+            .map_err(|e| {
+                error!(
+                    "[ConvAPI] 会话ID列表反序列化失败: {:?}\n原始响应: {}",
+                    e, body_str
+                );
+                anyhow::anyhow!("反序列化响应失败: {:?}", e)
+            })?;
+
+        if api_resp.err_code != 0 {
+            error!(
+                "[ConvAPI] 会话ID列表服务器错误，错误码: {}, 错误信息: {}",
+                api_resp.err_code, api_resp.err_msg
+            );
+            return Err(anyhow::anyhow!(
+                "服务器错误 {}: {}",
+                api_resp.err_code,
+                api_resp.err_msg
+            ));
+        }
+
         let data = api_resp
             .data
             .ok_or_else(|| anyhow::anyhow!("响应中缺少 data 字段"))?;

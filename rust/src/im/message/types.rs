@@ -1,6 +1,6 @@
-//! OpenIM 消息结构体定义
+//! 消息类型定义
 //!
-//! 此模块定义了 OpenIM 消息的各种元素类型，对应 Go 版本的 `pkg/apistruct/msg.go`
+//! 定义了 OpenIM 消息的各种元素类型，对应 Go 版本的 `pkg/apistruct/msg.go`
 
 use serde::{Deserialize, Serialize};
 
