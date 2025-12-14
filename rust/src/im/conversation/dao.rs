@@ -5,9 +5,7 @@
 use crate::im::entities::local_conversations;
 use crate::im::types::LocalConversation;
 use anyhow::{Context, Result};
-use sea_orm::{
-    ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set,
-};
+use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, Set};
 use tracing::{debug, info};
 
 /// 会话 DAO
@@ -340,9 +338,7 @@ impl VersionSyncDao {
     }
 
     /// 从数据库获取版本同步信息
-    pub async fn get_version_sync(
-        &self,
-    ) -> Result<Option<crate::im::conversation::LocalVersionSync>> {
+    pub async fn get_version_sync(&self) -> Result<Option<crate::im::conversation::models::LocalVersionSync>> {
         use crate::im::entities::local_version_sync::{Column, Entity};
 
         let model = Entity::find()
@@ -353,7 +349,7 @@ impl VersionSyncDao {
             .context("查询版本同步信息失败")?;
 
         Ok(
-            model.map(|model| crate::im::conversation::LocalVersionSync {
+            model.map(|model| crate::im::conversation::models::LocalVersionSync {
                 table_name: model.table_name,
                 entity_id: model.entity_id,
                 version: model.version as u64,
@@ -365,7 +361,7 @@ impl VersionSyncDao {
     /// 保存版本同步信息到数据库
     pub async fn save_version_sync(
         &self,
-        version_sync: &crate::im::conversation::LocalVersionSync,
+        version_sync: &crate::im::conversation::models::LocalVersionSync,
     ) -> Result<()> {
         use crate::im::entities::local_version_sync::{ActiveModel, Column, Entity};
         use sea_orm::Set;
@@ -389,3 +385,4 @@ impl VersionSyncDao {
         Ok(())
     }
 }
+

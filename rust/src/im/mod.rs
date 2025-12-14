@@ -2,7 +2,6 @@ pub mod advanced_msg_listener;
 pub mod auth;
 pub mod client;
 pub mod conversation;
-pub mod conversation_dao;
 pub mod entities;
 pub mod friend;
 pub mod message_store;
