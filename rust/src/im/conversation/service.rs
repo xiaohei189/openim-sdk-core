@@ -3,10 +3,9 @@
 //! 实现 OpenIM SDK 的会话增量同步逻辑，参考 Go 版本的实现
 
 use crate::im::conversation::api::ConversationApi;
+use crate::im::conversation::dao::{ConversationDao, VersionSyncDao};
 use crate::im::conversation::listener::{ConversationListener, EmptyConversationListener};
 use crate::im::conversation::models::{ConversationSyncerConfig, LocalVersionSync};
-// AllConversationsResp 和 IncrementalConversationResp 通过 API 方法返回，不需要直接导入
-use crate::im::conversation_dao::{ConversationDao, VersionSyncDao};
 use crate::im::types::LocalConversation;
 use anyhow::{Context, Result};
 use openim_protocol::constant;
@@ -426,7 +425,7 @@ impl ConversationSyncer {
                 }
                 Err(e) => {
                     warn!(
-                        "[ConvSync/Seq] 拉取服务器会话详情失败，无法为缺失会话补齐记录: {}",
+                        "[ConvSync/Seq] 拉取服务器会话详情失败，无法为缺失会话补齐记录: {:?}",
                         e
                     );
                 }
@@ -697,7 +696,7 @@ impl ConversationSyncer {
                     Some(seqs)
                 }
                 Err(e) => {
-                    warn!("[ConvSync] 获取 seqs 信息失败，将使用默认未读数: {}", e);
+                    warn!("[ConvSync] 获取 seqs 信息失败，将使用默认未读数: {:?}", e);
                     None
                 }
             };
@@ -743,7 +742,7 @@ impl ConversationSyncer {
         {
             Ok(resp) => resp,
             Err(e) => {
-                error!("[ConvSync] 增量同步失败: {}", e);
+                error!("[ConvSync] 增量同步失败: {:?}", e);
                 self.listener.on_sync_server_failed(false).await;
                 return Err(e);
             }
@@ -858,7 +857,7 @@ impl ConversationSyncer {
         let resp = match self.api.get_all_conversations().await {
             Ok(resp) => resp,
             Err(e) => {
-                error!("[ConvSync] 全量同步失败: {}", e);
+                error!("[ConvSync] 全量同步失败: {:?}", e);
                 debug!(
                     "[ConvSync] full_sync -> on_sync_server_failed(reinstalled={})",
                     reinstalled

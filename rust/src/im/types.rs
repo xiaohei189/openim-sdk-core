@@ -82,21 +82,34 @@ pub async fn handle_http_response<T: serde::de::DeserializeOwned>(
     operation_name: &str,
 ) -> anyhow::Result<ApiResponse<T>> {
     use anyhow::Context;
-    use tracing::{debug, error};
+    use tracing::{debug, error, info};
 
     let status = response.status();
+
+
+    // 读取 body bytes（只能读取一次）
+    let body_bytes = response.bytes().await.context("读取响应 body 失败")?;
+    // 打印 body 内容
+    let body_str = String::from_utf8_lossy(&body_bytes);
+    info!("[HTTP] {}响应 Body: {}", operation_name, body_str);
+
     if !status.is_success() {
-        let text = response.text().await.unwrap_or_default();
         error!(
             "[HTTP] {}请求失败，HTTP状态: {}, 响应: {}",
-            operation_name, status, text
+            operation_name, status, body_str
         );
-        return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, text));
+        return Err(anyhow::anyhow!("HTTP 错误 {}: {}", status, body_str));
     }
     debug!("[HTTP] {}请求成功，HTTP状态: {}", operation_name, status);
 
-    // 直接反序列化为统一的响应结构体
-    let api_resp: ApiResponse<T> = response.json().await.context("反序列化响应失败")?;
+    // 从 bytes 反序列化（因为 body 已经被消费了）
+    let api_resp: ApiResponse<T> = serde_json::from_slice(&body_bytes).map_err(|e| {
+        error!(
+            "[HTTP] {}反序列化失败: {:?}\n原始响应: {}",
+            operation_name, e, body_str
+        );
+        anyhow::anyhow!("反序列化响应失败: {:?}", e)
+    })?;
 
     // 检查错误码
     if api_resp.err_code != 0 {
@@ -142,6 +155,7 @@ pub struct AllConversationsResp {
 #[serde(rename_all = "camelCase")]
 pub struct LocalConversation {
     /// 会话 ID
+    #[serde(rename = "conversationID")]
     pub conversation_id: String,
     /// 会话类型：1=单聊, 2=普通群聊, 3=超级群聊, 4=通知会话
     pub conversation_type: i32,
