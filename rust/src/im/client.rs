@@ -322,6 +322,20 @@ impl OpenIMClient {
         ConversationSyncer::init_db_with_connection(&db).await?;
         crate::im::friend::FriendSyncer::init_db_with_connection(&db).await?;
 
+        // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
+        let http_client = reqwest::ClientBuilder::new()
+            .default_headers({
+                let mut headers = reqwest::header::HeaderMap::new();
+                headers.insert(
+                    reqwest::header::HeaderName::from_static("token"),
+                    reqwest::header::HeaderValue::from_str(&self.config.token)
+                        .context("无效的 token")?,
+                );
+                headers
+            })
+            .build()
+            .context("创建 HTTP 客户端失败")?;
+
         // 启动会话同步（HTTP + 本地 SQLite），并保存同步器用于后续基于消息通知的实时更新
         let cfg = ConversationSyncerConfig {
             user_id: self.config.user_id.clone(),
@@ -330,10 +344,11 @@ impl OpenIMClient {
             db_path: self.config.conversation_db_url.clone(),
         };
         let syncer = Arc::new(
-            ConversationSyncer::with_listener_and_db(
+            ConversationSyncer::with_listener_and_db_and_client(
                 cfg,
                 self.conversation_listener.clone(),
                 db.clone(),
+                http_client,
             )
             .await?,
         );
