@@ -138,7 +138,9 @@ impl ReconnectStrategy {
 /// 核心 IM 逻辑实现
 #[derive(Clone)]
 pub struct OpenIMClient {
-    pub(crate) config: ClientConfig,
+    // 对外需要读取配置（例如桥接层构建会话 / 好友同步器），
+    // 因此这里放宽为 pub，方便外部 crate 访问。
+    pub config: ClientConfig,
     // 当前可用的 WebSocket 写端，使用 Arc<Mutex<Option<...>>> 以便在重连时原子更新
     writer: Arc<Mutex<Option<WsWriter>>>,
     received_msg_ids: Arc<std::sync::Mutex<std::collections::HashSet<String>>>,
