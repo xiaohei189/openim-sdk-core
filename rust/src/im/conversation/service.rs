@@ -10,7 +10,7 @@ use crate::im::types::LocalConversation;
 use anyhow::{Context, Result};
 use openim_protocol::constant;
 use openim_protocol::sdkws;
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sqlx::{Pool, Sqlite};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tracing::{debug, error, info, warn};
@@ -35,7 +35,7 @@ impl ConversationSyncer {
         Self::with_listener(config, Arc::new(EmptyConversationListener)).await
     }
 
-    /// 创建新的会话同步器（带自定义监听器）
+    /// 创建新的会话同步器（带自定义监听器，内部自行创建连接池并执行迁移）
     pub async fn with_listener(
         config: ConversationSyncerConfig,
         listener: Arc<dyn ConversationListener>,
@@ -46,10 +46,11 @@ impl ConversationSyncer {
             "[ConvSync] 创建会话同步器，用户ID: {}, SQLite数据库: {}",
             config.user_id, db_url
         );
-        let mut opt = ConnectOptions::new(db_url.clone());
-        opt.sqlx_logging(false);
-        // 创建SQLite数据库连接
-        let db = Database::connect(opt)
+
+        // 使用 sqlx 连接池；迁移由上层统一执行，这里假设表已存在
+        let pool = sqlx::sqlite::SqlitePoolOptions::new()
+            .max_connections(5)
+            .connect(&db_url)
             .await
             .context(format!("连接SQLite数据库失败: {}", db_url))?;
 
@@ -67,54 +68,14 @@ impl ConversationSyncer {
             .build()
             .context("创建 HTTP 客户端失败")?;
 
-        // 初始化数据库表
-        let api = ConversationApi::new(
-            http_client,
-            config.api_base_url.clone(),
-            config.user_id.clone(),
-        );
-        let conversation_dao = ConversationDao::new(db.clone());
-        let version_sync_dao = VersionSyncDao::new(db.clone(), config.user_id.clone());
-        let syncer = Self {
-            api,
-            conversation_dao,
-            version_sync_dao,
-            listener,
-            config,
-        };
-
-        syncer.conversation_dao.init_db().await?;
-        Ok(syncer)
+        Self::with_listener_and_db_and_client(config, listener, Arc::new(pool), http_client).await
     }
 
-    /// 创建新的会话同步器（使用共享数据库连接）
-    pub async fn with_listener_and_db(
-        config: ConversationSyncerConfig,
-        listener: Arc<dyn ConversationListener>,
-        db: Arc<DatabaseConnection>,
-    ) -> Result<Self> {
-        // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
-        let http_client = reqwest::ClientBuilder::new()
-            .default_headers({
-                let mut headers = reqwest::header::HeaderMap::new();
-                headers.insert(
-                    reqwest::header::HeaderName::from_static("token"),
-                    reqwest::header::HeaderValue::from_str(&config.token)
-                        .context("无效的 token")?,
-                );
-                headers
-            })
-            .build()
-            .context("创建 HTTP 客户端失败")?;
-
-        Self::with_listener_and_db_and_client(config, listener, db, http_client).await
-    }
-
-    /// 创建新的会话同步器（使用共享数据库连接和 HTTP 客户端）
+    /// 创建新的会话同步器（使用共享连接池和 HTTP 客户端）
     pub async fn with_listener_and_db_and_client(
         config: ConversationSyncerConfig,
         listener: Arc<dyn ConversationListener>,
-        db: Arc<DatabaseConnection>,
+        db: Arc<Pool<Sqlite>>,
         http_client: reqwest::Client,
     ) -> Result<Self> {
         info!(
@@ -131,21 +92,13 @@ impl ConversationSyncer {
             config.user_id.clone(),
         );
 
-        let syncer = Self {
+        Ok(Self {
             api,
             conversation_dao: ConversationDao::new((*db).clone()),
             version_sync_dao: VersionSyncDao::new((*db).clone(), config.user_id.clone()),
             listener,
             config,
-        };
-
-        // 注意：数据库表初始化已在 client 中完成，这里不需要再次初始化
-        Ok(syncer)
-    }
-
-    /// 使用共享数据库连接初始化数据库表结构（静态方法）
-    pub async fn init_db_with_connection(db: &DatabaseConnection) -> Result<()> {
-        ConversationDao::init_db_with_connection(db).await
+        })
     }
 
     /// 从数据库获取所有本地会话

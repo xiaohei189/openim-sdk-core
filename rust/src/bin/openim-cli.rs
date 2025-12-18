@@ -35,7 +35,6 @@ struct Args {
 
 /// 初始化日志（同时输出到 stdout 和文件）
 fn init_logger(log_level: &str) {
-    use std::fs::OpenOptions;
     use std::io;
     use tracing_subscriber::prelude::*;
     use tracing_subscriber::EnvFilter;
@@ -44,14 +43,7 @@ fn init_logger(log_level: &str) {
     let filter_layer =
         EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(log_level));
 
-    // 创建日志文件（追加模式）
-    let log_file = OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open("debug.log")
-        .expect("无法创建日志文件 debug.log");
-
-    // 输出到 stdout（控制台），保留 ANSI 颜色代码用于终端显示
+    // 只输出到 stdout（控制台），保留 ANSI 颜色代码用于终端显示
     let stdout_layer = tracing_subscriber::fmt::layer()
         .with_writer(io::stdout)
         .with_file(true)
@@ -59,21 +51,12 @@ fn init_logger(log_level: &str) {
         .with_target(false)
         .with_ansi(true);
 
-    // 输出到文件，禁用 ANSI 颜色代码（文件不需要颜色）
-    let file_layer = tracing_subscriber::fmt::layer()
-        .with_writer(log_file)
-        .with_file(true)
-        .with_line_number(true)
-        .with_target(false)
-        .with_ansi(false);
-
     tracing_subscriber::registry()
         .with(filter_layer)
         .with(stdout_layer)
-        .with(file_layer)
         .init();
 
-    info!("[CLI] 📝 日志已同时输出到控制台和文件: debug.log");
+    info!("[CLI] 📝 日志已输出到控制台");
 }
 
 /// 设置监听器（输出所有接收到的信息）
