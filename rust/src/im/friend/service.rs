@@ -8,7 +8,7 @@ use crate::im::friend::dao::FriendDao;
 use crate::im::friend::listener::{EmptyFriendListener, FriendListener};
 use crate::im::friend::models::{FriendSyncerConfig, LocalFriend};
 use anyhow::{Context, Result};
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sqlx::{Pool, Sqlite};
 use std::collections::HashMap;
 use std::sync::Arc;
 use tracing::{debug, error, info};
@@ -30,7 +30,7 @@ impl FriendSyncer {
         Self::with_listener(config, Arc::new(EmptyFriendListener)).await
     }
 
-    /// 创建新的好友同步器（带自定义监听器）
+    /// 创建新的好友同步器（带自定义监听器，内部创建连接池）
     pub async fn with_listener(
         config: FriendSyncerConfig,
         listener: Arc<dyn FriendListener>,
@@ -40,10 +40,10 @@ impl FriendSyncer {
             "[FriendSync] 创建好友同步器，用户ID: {}, SQLite数据库: {}",
             config.user_id, db_url
         );
-        let mut opt = ConnectOptions::new(db_url.clone());
-        opt.sqlx_logging(false);
 
-        let db = Database::connect(opt)
+        let db = sqlx::sqlite::SqlitePoolOptions::new()
+            .max_connections(5)
+            .connect(&db_url)
             .await
             .context(format!("连接SQLite数据库失败: {}", db_url))?;
 
@@ -60,29 +60,25 @@ impl FriendSyncer {
             })
             .build()
             .context("创建 HTTP 客户端失败")?;
-
         let api = FriendApi::new(
             http_client,
             config.api_base_url.clone(),
             config.user_id.clone(),
         );
-        let friend_dao = FriendDao::new(db.clone(), config.user_id.clone());
-        let syncer = Self {
+        let friend_dao = FriendDao::new(db, config.user_id.clone());
+        Ok(Self {
             api,
             friend_dao,
             listener,
             config,
-        };
-
-        syncer.friend_dao.init_db().await?;
-        Ok(syncer)
+        })
     }
 
-    /// 创建新的好友同步器（使用共享数据库连接）
+    /// 创建新的好友同步器（使用共享连接池）
     pub async fn with_listener_and_db(
         config: FriendSyncerConfig,
         listener: Arc<dyn FriendListener>,
-        db: Arc<DatabaseConnection>,
+        db: Arc<Pool<Sqlite>>,
     ) -> Result<Self> {
         // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
         let http_client = reqwest::ClientBuilder::new()
@@ -99,11 +95,11 @@ impl FriendSyncer {
             .context("创建 HTTP 客户端失败")?;
 
         info!(
-            "[FriendSync] 创建好友同步器（使用共享数据库连接），用户ID: {}",
+            "[FriendSync] 创建好友同步器（使用共享连接池），用户ID: {}",
             config.user_id
         );
 
-        let syncer = Self {
+        Ok(Self {
             api: FriendApi::new(
                 http_client,
                 config.api_base_url.clone(),
@@ -112,15 +108,7 @@ impl FriendSyncer {
             friend_dao: FriendDao::new((*db).clone(), config.user_id.clone()),
             listener,
             config,
-        };
-
-        // 注意：数据库表初始化已在 client 中完成，这里不需要再次初始化
-        Ok(syncer)
-    }
-
-    /// 使用共享数据库连接初始化数据库表结构（静态方法）
-    pub async fn init_db_with_connection(db: &DatabaseConnection) -> Result<()> {
-        FriendDao::init_db_with_connection(db).await
+        })
     }
 
     /// 从数据库获取所有好友

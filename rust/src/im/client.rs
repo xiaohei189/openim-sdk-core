@@ -11,6 +11,7 @@ use crate::im::friend::{
     EmptyFriendListener, FriendListener, FriendSyncer, FriendSyncerConfig, LocalFriend,
 };
 use crate::im::message::dao::MessageStore;
+use crate::im::db::create_sqlite_pool_with_migration;
 use crate::im::message::listener::{AdvancedMsgListener, EmptyAdvancedMsgListener};
 use crate::im::message::types::{
     AtElem, AtInfo, CustomElem, FileElem, LocationElem, MarkdownTextElem, MsgStruct, PictureElem,
@@ -24,7 +25,7 @@ use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::{SinkExt, StreamExt};
 use openim_protocol::constant;
 use openim_protocol::Message as ProtobufMessage;
-use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sqlx::{Pool, Sqlite};
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
@@ -156,8 +157,8 @@ pub struct OpenIMClient {
     advanced_msg_listener: Arc<dyn AdvancedMsgListener>,
     // 消息存储（本地 SQLite，sqlx 驱动）
     pub(crate) message_store: Option<Arc<MessageStore>>,
-    // 共享数据库连接（用于会话和好友同步器）
-    db: Option<Arc<DatabaseConnection>>,
+    // 共享数据库连接池（用于会话和好友同步器）
+    db: Option<Arc<Pool<Sqlite>>>,
     // 重连策略（指数退避）
     reconnect_strategy: Arc<ReconnectStrategy>,
 }
@@ -181,24 +182,25 @@ impl OpenIMClient {
                 let db = self.db.clone();
                 handle.block_on(async {
                     if let Some(db_conn) = db {
-                        if let Ok(syncer) =
-                            ConversationSyncer::with_listener_and_db(cfg, listener.clone(), db_conn)
-                                .await
+                        if let Ok(syncer) = ConversationSyncer::with_listener_and_db_and_client(
+                            cfg,
+                            listener.clone(),
+                            db_conn,
+                            reqwest::Client::new(),
+                        )
+                        .await
                         {
                             *syncer_slot = Some(Arc::new(syncer));
                         } else {
                             // 保持原同步器，出现错误仅记录日志
                             tracing::error!("[Client] 重建会话同步器失败，保持原同步器");
                         }
+                    } else if let Ok(syncer) =
+                        ConversationSyncer::with_listener(cfg, listener.clone()).await
+                    {
+                        *syncer_slot = Some(Arc::new(syncer));
                     } else {
-                        // 如果没有共享数据库连接，使用旧方法
-                        if let Ok(syncer) =
-                            ConversationSyncer::with_listener(cfg, listener.clone()).await
-                        {
-                            *syncer_slot = Some(Arc::new(syncer));
-                        } else {
-                            tracing::error!("[Client] 重建会话同步器失败，保持原同步器");
-                        }
+                        tracing::error!("[Client] 重建会话同步器失败，保持原同步器");
                     }
                 });
             }
@@ -383,23 +385,15 @@ impl OpenIMClient {
         info!("[Client] 💓 启动心跳");
         info!("[Client] 📥 开始监听服务器消息");
 
-        // 创建共享数据库连接
+        // 创建共享 SQLite 连接池并执行迁移（会话 / 好友等表）
         info!(
-            "[Client] 🔗 创建共享数据库连接: {}",
+            "[Client] 🔗 创建共享 SQLite 连接池并执行迁移: {}",
             self.config.conversation_db_url
         );
-        let mut opt = ConnectOptions::new(self.config.conversation_db_url.clone());
-        opt.sqlx_logging(false);
-        let db = Arc::new(Database::connect(opt).await.context(format!(
-            "连接SQLite数据库失败: {}",
-            self.config.conversation_db_url
-        ))?);
+        let pool: Pool<Sqlite> =
+            create_sqlite_pool_with_migration(&self.config.conversation_db_url).await?;
+        let db = Arc::new(pool);
         self.db = Some(db.clone());
-
-        // 初始化数据库表结构（会话表和好友表）
-        info!("[Client] 📋 初始化数据库表结构");
-        ConversationSyncer::init_db_with_connection(&db).await?;
-        FriendSyncer::init_db_with_connection(&db).await?;
 
         // 创建带认证拦截器的 HTTP 客户端（token 通过 default_headers 自动添加）
         let http_client = reqwest::ClientBuilder::new()

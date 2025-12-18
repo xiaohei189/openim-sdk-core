@@ -21,13 +21,12 @@ reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-feature
 uuid = { version = "1.10", features = ["v4"] }
 anyhow = "1.0"
 log = "0.4"
-sea-orm = { version = "2.0.0-rc", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "debug-print"] }
 async-trait = "0.1"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.20", features = ["env-filter"] }
 clap = { version = "4.5", features = ["derive"] }
-# 对齐 sea-orm 2.0.0-rc 依赖的 sqlx 版本，避免 libsqlite3-sys 冲突
-sqlx = { version = "0.8.5", features = ["runtime-tokio-rustls", "sqlite", "chrono", "json"] }
+# 统一使用 sqlx 作为 SQLite 访问和迁移工具
+sqlx = { version = "0.8.5", features = ["runtime-tokio-rustls", "sqlite", "chrono", "json", "migrate"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn" }
