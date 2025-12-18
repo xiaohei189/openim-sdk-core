@@ -87,13 +87,60 @@ impl ClientConfig {
     }
 }
 
+/// WebSocket 连接致命错误（如 token 失效），用于通知重连逻辑“不要再重连”
+#[derive(Debug)]
+struct ConnectFatalError {
+    code: i32,
+    message: String,
+}
+
+impl std::fmt::Display for ConnectFatalError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "fatal ws connect error code={}, msg={}", self.code, self.message)
+    }
+}
+
+impl std::error::Error for ConnectFatalError {}
+
+/// Go 版重连策略的 Rust 实现：指数退避
+#[derive(Debug)]
+struct ReconnectStrategy {
+    attempts: Vec<u64>,
+    index: std::sync::Mutex<i32>,
+}
+
+impl ReconnectStrategy {
+    fn new() -> Self {
+        Self {
+            // 对齐 Go 版的 {1,2,4,8,16} 秒，之后循环
+            attempts: vec![1, 2, 4, 8, 16],
+            index: std::sync::Mutex::new(-1),
+        }
+    }
+
+    /// 获取下一次重连前的等待时间
+    fn next_interval(&self) -> Duration {
+        let mut idx = self.index.lock().unwrap();
+        *idx += 1;
+        let i = (*idx as usize) % self.attempts.len();
+        Duration::from_secs(self.attempts[i])
+    }
+
+    /// 重置重连计数（在连接成功后调用）
+    fn reset(&self) {
+        let mut idx = self.index.lock().unwrap();
+        *idx = -1;
+    }
+}
+
 /// OpenIM 客户端
 ///
 /// 核心 IM 逻辑实现
 #[derive(Clone)]
 pub struct OpenIMClient {
     pub(crate) config: ClientConfig,
-    writer: Option<Arc<Mutex<WsWriter>>>,
+    // 当前可用的 WebSocket 写端，使用 Arc<Mutex<Option<...>>> 以便在重连时原子更新
+    writer: Arc<Mutex<Option<WsWriter>>>,
     received_msg_ids: Arc<std::sync::Mutex<std::collections::HashSet<String>>>,
     // 会话同步器（用于基于消息通知实时更新会话）
     pub(crate) conversation_syncer: Option<Arc<ConversationSyncer>>,
@@ -109,6 +156,8 @@ pub struct OpenIMClient {
     pub(crate) message_store: Option<Arc<MessageStore>>,
     // 共享数据库连接（用于会话和好友同步器）
     db: Option<Arc<DatabaseConnection>>,
+    // 重连策略（指数退避）
+    reconnect_strategy: Arc<ReconnectStrategy>,
 }
 
 impl OpenIMClient {
@@ -203,7 +252,7 @@ impl OpenIMClient {
     pub fn new(config: ClientConfig) -> Self {
         Self {
             config,
-            writer: None,
+            writer: Arc::new(Mutex::new(None)),
             received_msg_ids: Arc::new(std::sync::Mutex::new(std::collections::HashSet::new())),
             conversation_syncer: None,
             friend_syncer: None,
@@ -212,6 +261,7 @@ impl OpenIMClient {
             advanced_msg_listener: Arc::new(EmptyAdvancedMsgListener),
             message_store: None,
             db: None,
+            reconnect_strategy: Arc::new(ReconnectStrategy::new()),
         }
     }
     /// 构建 WebSocket 连接 URL
@@ -236,8 +286,8 @@ impl OpenIMClient {
         )
     }
 
-    /// 连接到服务器并在内部启动消息处理
-    pub async fn connect(&mut self) -> Result<()> {
+    /// 建立一次 WebSocket 连接并完成鉴权握手（不包含 DB/同步器初始化）
+    async fn connect_ws_once(&self) -> Result<WsReader> {
         let operation_id = format!("{}", chrono::Utc::now().timestamp_millis());
         let url = self.build_url(&operation_id);
 
@@ -253,10 +303,14 @@ impl OpenIMClient {
         );
 
         let (write, mut read) = ws_stream.split();
-        let writer = Arc::new(Mutex::new(write));
-        self.writer = Some(writer.clone());
 
-        // 等待连接成功响应
+        // 更新当前 writer
+        {
+            let mut guard = self.writer.lock().await;
+            *guard = Some(write);
+        }
+
+        // 等待连接成功响应（鉴权）
         if let Some(Ok(WsMessage::Text(text))) = read.next().await {
             debug!("[Client] 📥 WebSocket 连接响应: {}", text);
             match serde_json::from_str::<WebSocketConnectResp>(&text) {
@@ -279,11 +333,24 @@ impl OpenIMClient {
                             "[Client] ❌ WebSocket 连接失败，错误码: {}, 错误信息: {}",
                             resp.err_code, error_msg
                         );
-                        return Err(anyhow::anyhow!(
-                            "WebSocket 连接失败，错误码: {}, 错误信息: {}",
-                            resp.err_code,
-                            error_msg
-                        ));
+
+                        // 鉴权失败一般意味着 token 失效/被踢等致命错误，对齐 Go 的逻辑：视为“不要再重连”
+                        let listener = self.advanced_msg_listener.clone();
+                        let msg_for_cb = format!(
+                            "WebSocket 鉴权失败, code={}, msg={}",
+                            resp.err_code, error_msg
+                        );
+                        tokio::spawn(async move {
+                            listener
+                                .on_connection_status_changed(false, msg_for_cb)
+                                .await;
+                        });
+
+                        return Err(ConnectFatalError {
+                            code: resp.err_code,
+                            message: error_msg,
+                        }
+                        .into());
                     }
                 }
                 Err(e) => {
@@ -302,6 +369,14 @@ impl OpenIMClient {
             error!("[Client] ❌ 未收到 WebSocket 连接响应");
             return Err(anyhow::anyhow!("未收到 WebSocket 连接响应"));
         }
+
+        Ok(read)
+    }
+
+    /// 连接到服务器并在内部启动消息处理（包含断线重连）
+    pub async fn connect(&mut self) -> Result<()> {
+        // 第一次连接：若失败直接返回错误（与 Go 首次失败行为一致）
+        let read = self.connect_ws_once().await?;
 
         info!("[Client] 💓 启动心跳");
         info!("[Client] 📥 开始监听服务器消息");
@@ -401,24 +476,82 @@ impl OpenIMClient {
         );
         self.message_store = Some(store);
 
-        // 启动心跳
-        let writer_for_heartbeat = writer.clone();
+        // 启动心跳任务（使用可更新的 writer）
+        let writer_for_heartbeat = self.writer.clone();
         tokio::spawn(async move {
             let mut ticker = interval(Duration::from_secs(25));
             loop {
                 ticker.tick().await;
-                let mut w = writer_for_heartbeat.lock().await;
-                if w.send(WsMessage::Ping(vec![])).await.is_err() {
+                let mut guard = writer_for_heartbeat.lock().await;
+                if let Some(w) = guard.as_mut() {
+                    if w.send(WsMessage::Ping(vec![])).await.is_err() {
+                        // 写失败通常意味着连接已断开，等待重连任务恢复 writer
+                        break;
+                    }
+                } else {
+                    // 当前无可用连接，结束本轮心跳任务
                     break;
                 }
             }
         });
 
-        // 在内部启动消息处理任务
+        // 在内部启动消息处理 + 重连任务
         let client = self.clone();
         tokio::spawn(async move {
-            if let Err(e) = client.handle_messages(read).await {
-                error!("消息处理错误: {}", e);
+            let mut current_read = Some(read);
+
+            loop {
+                if let Some(reader) = current_read.take() {
+                    if let Err(e) = client.handle_messages(reader).await {
+                        error!("消息处理错误: {}", e);
+                    } else {
+                        warn!("[Client] 消息处理结束，准备检查是否需要重连");
+                    }
+                }
+
+                // 断线后按 Go 版逻辑进行带退避的重连
+                let wait = client.reconnect_strategy.next_interval();
+                info!(
+                    "[Client] 尝试重连，等待 {:?} 后重试（指数退避）",
+                    wait
+                );
+                tokio::time::sleep(wait).await;
+
+                match client.connect_ws_once().await {
+                    Ok(new_read) => {
+                        info!("[Client] 🔁 重连成功，恢复消息读取");
+                        client.reconnect_strategy.reset();
+                        current_read = Some(new_read);
+
+                        // 每次重连后重新启动心跳任务
+                        let writer_for_heartbeat = client.writer.clone();
+                        tokio::spawn(async move {
+                            let mut ticker = interval(Duration::from_secs(25));
+                            loop {
+                                ticker.tick().await;
+                                let mut guard = writer_for_heartbeat.lock().await;
+                                if let Some(w) = guard.as_mut() {
+                                    if w.send(WsMessage::Ping(vec![])).await.is_err() {
+                                        break;
+                                    }
+                                } else {
+                                    break;
+                                }
+                            }
+                        });
+                    }
+                    Err(e) => {
+                        // 如果是致命连接错误（例如 token 失效/被踢），则停止重连循环
+                        if e.downcast_ref::<ConnectFatalError>().is_some() {
+                            error!("[Client] 遇到致命连接错误，停止重连: {}", e);
+                            break;
+                        }
+
+                        error!("[Client] 重连失败: {}", e);
+                        // 非致命错误则继续外层循环，按指数退避再次尝试
+                        continue;
+                    }
+                }
             }
         });
 
@@ -742,11 +875,6 @@ impl OpenIMClient {
 
     /// 发送请求
     async fn send_request(&self, req_identifier: i32, data: Vec<u8>) -> Result<()> {
-        let writer = self
-            .writer
-            .as_ref()
-            .ok_or_else(|| anyhow::anyhow!("未连接"))?;
-
         let operation_id = format!("{}", chrono::Utc::now().timestamp_millis());
 
         let req = crate::im::types::OpenIMReq {
@@ -763,8 +891,11 @@ impl OpenIMClient {
         // 压缩 JSON
         let compressed = compress_gzip(&json)?;
 
-        let mut w = writer.lock().await;
-        w.send(WsMessage::Binary(compressed)).await?;
+        let mut guard = self.writer.lock().await;
+        let writer = guard
+            .as_mut()
+            .ok_or_else(|| anyhow::anyhow!("未连接"))?;
+        writer.send(WsMessage::Binary(compressed)).await?;
         Ok(())
     }
 
