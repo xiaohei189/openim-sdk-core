@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: third_party_integration
+title: 第三方集成（文件上传、日志上报、应用角标）
+scope:
+    - internal/third/
+source_files: []
+depends_on: []
+related_to:
+    - path: conversation_msg_domain
+    - path: interaction_domain
+    - path: public_sdk_facade
+    - path: user_domain

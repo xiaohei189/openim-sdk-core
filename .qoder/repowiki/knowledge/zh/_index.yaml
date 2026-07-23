@@ -1,0 +1,202 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: main
+nodes_managed: true
+exported_at: "2026-07-23T17:34:17Z"
+modules:
+    "":
+        dir_name: OpenIM Go SDK 核心仓库
+        title: OpenIM Go SDK 核心仓库
+        scope:
+            - README.md
+            - README_zh-CN.md
+            - CONTRIBUTING.md
+            - .gitignore
+            - .golangci.yml
+            - .goreleaser.yaml
+            - go.mod
+            - go.sum
+            - Makefile
+            - LICENSE
+            - SDD.md
+            - identifier.sqlite
+        source_files: []
+        children:
+            - conversation_msg_domain
+            - group_domain
+            - interaction_domain
+            - public_sdk_facade
+            - relation_domain
+            - shared_infrastructure
+            - third_party_integration
+            - user_domain
+            - wasm_platform_adapter
+        depends_on: []
+        related_to: []
+    conversation_msg_domain:
+        dir_name: 会话与消息领域服务（conversation_msg）
+        title: 会话与消息领域服务（conversation_msg）
+        scope:
+            - internal/conversation_msg/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: group_domain
+            - path: interaction_domain
+            - path: public_sdk_facade
+            - path: relation_domain
+            - path: third_party_integration
+            - path: user_domain
+    group_domain:
+        dir_name: 群组业务域（Group Domain）
+        title: 群组业务域（Group Domain）
+        scope:
+            - internal/group/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: public_sdk_facade
+            - path: relation_domain
+            - path: user_domain
+    interaction_domain:
+        dir_name: 长连接与消息交互域
+        title: 长连接与消息交互域
+        scope:
+            - internal/interaction/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: third_party_integration
+    public_sdk_facade:
+        dir_name: OpenIM Go SDK 对外门面与回调契约
+        title: OpenIM Go SDK 对外门面与回调契约
+        scope:
+            - open_im_sdk/
+            - open_im_sdk_callback/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: group_domain
+            - path: relation_domain
+            - path: third_party_integration
+            - path: user_domain
+            - path: wasm_platform_adapter/event_listener
+            - path: wasm_platform_adapter/wasm_wrapper
+    relation_domain:
+        dir_name: 关系链域（好友、黑名单与好友申请）
+        title: 关系链域（好友、黑名单与好友申请）
+        scope:
+            - internal/relation/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: group_domain
+            - path: public_sdk_facade
+            - path: user_domain
+    shared_infrastructure:
+        dir_name: 共享基础设施层（HTTP_DB_缓存_同步_版本）
+        title: 共享基础设施层（HTTP/DB/缓存/同步/版本）
+        scope:
+            - pkg/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: wasm_platform_adapter/indexdb_persistence
+    third_party_integration:
+        dir_name: 第三方集成（文件上传、日志上报、应用角标）
+        title: 第三方集成（文件上传、日志上报、应用角标）
+        scope:
+            - internal/third/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: interaction_domain
+            - path: public_sdk_facade
+            - path: user_domain
+    user_domain:
+        dir_name: 用户域（User Domain）
+        title: 用户域（User Domain）
+        scope:
+            - internal/user/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: conversation_msg_domain
+            - path: group_domain
+            - path: public_sdk_facade
+            - path: relation_domain
+            - path: third_party_integration
+    wasm_platform_adapter:
+        dir_name: OpenIM SDK WebAssembly 平台适配层
+        title: OpenIM SDK WebAssembly 平台适配层
+        scope:
+            - wasm/
+        source_files: []
+        children:
+            - wasm_platform_adapter/cmd_entry
+            - wasm_platform_adapter/event_listener
+            - wasm_platform_adapter/indexdb_persistence
+            - wasm_platform_adapter/wasm_wrapper
+        depends_on: []
+        related_to: []
+    wasm_platform_adapter/cmd_entry:
+        dir_name: WASM 平台入口与 JS 绑定注册
+        title: WASM 平台入口与 JS 绑定注册
+        scope:
+            - wasm/cmd/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: wasm_platform_adapter/wasm_wrapper
+    wasm_platform_adapter/event_listener:
+        dir_name: WASM 平台回调桥接与事件转发层
+        title: WASM 平台回调桥接与事件转发层
+        scope:
+            - wasm/event_listener/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: public_sdk_facade
+            - path: wasm_platform_adapter/indexdb_persistence
+            - path: wasm_platform_adapter/wasm_wrapper
+    wasm_platform_adapter/indexdb_persistence:
+        dir_name: WASM IndexDB 本地持久化适配层
+        title: WASM IndexDB 本地持久化适配层
+        scope:
+            - wasm/indexdb/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: shared_infrastructure
+            - path: wasm_platform_adapter/event_listener
+            - path: wasm_platform_adapter/wasm_wrapper
+    wasm_platform_adapter/wasm_wrapper:
+        dir_name: WASM 平台适配层（JS↔Go 桥接）
+        title: WASM 平台适配层（JS↔Go 桥接）
+        scope:
+            - wasm/wasm_wrapper/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: public_sdk_facade
+            - path: wasm_platform_adapter/cmd_entry
+            - path: wasm_platform_adapter/event_listener
+            - path: wasm_platform_adapter/indexdb_persistence

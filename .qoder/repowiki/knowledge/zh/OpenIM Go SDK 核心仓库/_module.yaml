@@ -1,0 +1,19 @@
+schema_version: 1
+module_path: ""
+title: OpenIM Go SDK 核心仓库
+scope:
+    - README.md
+    - README_zh-CN.md
+    - CONTRIBUTING.md
+    - .gitignore
+    - .golangci.yml
+    - .goreleaser.yaml
+    - go.mod
+    - go.sum
+    - Makefile
+    - LICENSE
+    - SDD.md
+    - identifier.sqlite
+source_files: []
+depends_on: []
+related_to: []

@@ -1,0 +1,13 @@
+schema_version: 1
+module_path: user_domain
+title: 用户域（User Domain）
+scope:
+    - internal/user/
+source_files: []
+depends_on: []
+related_to:
+    - path: conversation_msg_domain
+    - path: group_domain
+    - path: public_sdk_facade
+    - path: relation_domain
+    - path: third_party_integration

@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: shared_infrastructure
+title: 共享基础设施层（HTTP/DB/缓存/同步/版本）
+scope:
+    - pkg/
+source_files: []
+depends_on: []
+related_to:
+    - path: wasm_platform_adapter/indexdb_persistence

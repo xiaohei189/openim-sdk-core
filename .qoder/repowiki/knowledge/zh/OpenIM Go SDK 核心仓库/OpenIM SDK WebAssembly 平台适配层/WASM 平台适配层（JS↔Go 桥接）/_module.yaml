@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: wasm_platform_adapter/wasm_wrapper
+title: WASM 平台适配层（JS↔Go 桥接）
+scope:
+    - wasm/wasm_wrapper/
+source_files: []
+depends_on: []
+related_to:
+    - path: public_sdk_facade
+    - path: wasm_platform_adapter/cmd_entry
+    - path: wasm_platform_adapter/event_listener
+    - path: wasm_platform_adapter/indexdb_persistence

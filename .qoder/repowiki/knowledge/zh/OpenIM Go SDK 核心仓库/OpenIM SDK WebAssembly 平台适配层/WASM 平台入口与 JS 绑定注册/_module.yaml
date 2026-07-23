@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: wasm_platform_adapter/cmd_entry
+title: WASM 平台入口与 JS 绑定注册
+scope:
+    - wasm/cmd/
+source_files: []
+depends_on: []
+related_to:
+    - path: wasm_platform_adapter/wasm_wrapper

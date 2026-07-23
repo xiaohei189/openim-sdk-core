@@ -1,0 +1,24 @@
+version: 1
+scope:
+  include: []
+  exclude:
+    - "**/*_test.go"
+    - "test/**"
+    - "msgtest/**"
+    - "integration_test/**"
+    - "docs/**"
+    - "scripts/**"
+repowiki:
+  template: "architecture"
+  notes:
+    - text: "本项目是 OpenIM 跨平台 IM SDK 核心层（Go 语言），所有开源 OpenIM SDK（除 mini web）均基于此构建，支持 iOS/Android/PC/Web(WASM)。"
+    - text: "模块路径为 github.com/openimsdk/openim-sdk-core/v3，Go 1.24+，依赖 openimsdk/protocol 和 openimsdk/tools。"
+    - text: "open_im_sdk/ 是对外暴露的公共 API 层（init_login、conversation_msg、group、relation、user、third 等），internal/ 是内部业务实现。"
+    - text: "wasm/ 目录是 WebAssembly 平台适配层，通过 wasm_wrapper 将核心能力暴露给 JS 调用。"
+    - text: "pkg/db 使用 GORM + SQLite 做本地消息存储；pkg/network 管理 WebSocket 长连接与心跳；pkg/syncer 负责数据增量同步。"
+  documents: []
+knowledgecard:
+  notes:
+    - text: "internal/ 按业务域划分：conversation_msg（会话消息）、group（群组）、interaction（交互/好友）、relation（关系链）、user（用户）、third（第三方集成）。"
+    - text: "pkg/ 是基础设施层：api（HTTP 请求）、db（本地数据库）、network（WebSocket）、syncer（增量同步器）、cache、converter、ccontext 等。"
+    - text: "open_im_sdk/ 是 SDK 对外入口，通过 callback 模式（open_im_sdk_callback/）向上层平台 SDK 异步返回结果。"

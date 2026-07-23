@@ -1,0 +1,14 @@
+schema_version: 1
+module_path: conversation_msg_domain
+title: 会话与消息领域服务（conversation_msg）
+scope:
+    - internal/conversation_msg/
+source_files: []
+depends_on: []
+related_to:
+    - path: group_domain
+    - path: interaction_domain
+    - path: public_sdk_facade
+    - path: relation_domain
+    - path: third_party_integration
+    - path: user_domain

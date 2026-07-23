@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: relation_domain
+title: 关系链域（好友、黑名单与好友申请）
+scope:
+    - internal/relation/
+source_files: []
+depends_on: []
+related_to:
+    - path: conversation_msg_domain
+    - path: group_domain
+    - path: public_sdk_facade
+    - path: user_domain

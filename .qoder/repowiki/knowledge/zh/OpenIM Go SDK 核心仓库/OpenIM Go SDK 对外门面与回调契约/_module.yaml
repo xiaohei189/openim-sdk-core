@@ -1,0 +1,16 @@
+schema_version: 1
+module_path: public_sdk_facade
+title: OpenIM Go SDK 对外门面与回调契约
+scope:
+    - open_im_sdk/
+    - open_im_sdk_callback/
+source_files: []
+depends_on: []
+related_to:
+    - path: conversation_msg_domain
+    - path: group_domain
+    - path: relation_domain
+    - path: third_party_integration
+    - path: user_domain
+    - path: wasm_platform_adapter/event_listener
+    - path: wasm_platform_adapter/wasm_wrapper

@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: wasm_platform_adapter/indexdb_persistence
+title: WASM IndexDB 本地持久化适配层
+scope:
+    - wasm/indexdb/
+source_files: []
+depends_on: []
+related_to:
+    - path: shared_infrastructure
+    - path: wasm_platform_adapter/event_listener
+    - path: wasm_platform_adapter/wasm_wrapper

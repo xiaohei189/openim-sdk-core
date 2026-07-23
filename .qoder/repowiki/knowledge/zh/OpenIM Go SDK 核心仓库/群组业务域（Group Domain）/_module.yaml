@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: group_domain
+title: 群组业务域（Group Domain）
+scope:
+    - internal/group/
+source_files: []
+depends_on: []
+related_to:
+    - path: conversation_msg_domain
+    - path: public_sdk_facade
+    - path: relation_domain
+    - path: user_domain
